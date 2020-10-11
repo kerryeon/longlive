@@ -1,33 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:longlive/res/app.dart';
+import 'package:longlive/models/user.dart';
+import 'package:longlive/widgets/register.dart';
 
-class InitWidget extends StatelessWidget {
+class InitWidget extends StatefulWidget {
+  @override
+  State createState() => _State();
+}
+
+class _State extends State {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // 앱 이름
-      title: App.appName,
-      theme: ThemeData(
-        // 앱의 색상 / 색감
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-        body: Center(
-          // 세로로 배치
-          child: Column(
-            // 가운데 정렬
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.network(
-                  'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'),
-              Text(
-                '오래살자',
-              ),
-            ],
-          ),
+    _waitAndMove();
+    return Scaffold(
+      // 중앙에 배치
+      body: Center(
+        // 로고
+        child: Image.network(
+          'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
         ),
       ),
     );
+  }
+
+  /// 잠시 후 다음 화면으로 이동합니다.
+  void _waitAndMove() {
+    Future.delayed(const Duration(seconds: 2), _moveToNextPage);
+  }
+
+  /// 다음 화면으로 이동합니다.
+  /// 이때, 첫 사용자는 첫 사용자 화면으로 이동합니다. [RegisterWidget]
+  /// 기존 사용자는 메인 화면으로 이동합니다. [MainWidget]
+  void _moveToNextPage() {
+    if (!User().isLoggedIn) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) => RegisterWidget(),
+        ),
+      );
+    }
   }
 }
