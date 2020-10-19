@@ -85,6 +85,15 @@ class DB {
       whereArgs: [object.id],
     );
   }
+
+  /// 값을 삭제합니다.
+  Future<void> delete(DBTable object) async {
+    await _db.delete(
+      object.getTableName,
+      where: 'id = ?',
+      whereArgs: [object.id],
+    );
+  }
 }
 
 /// 데이터베이스 테이블을 구성하는 추상 클래스입니다.
@@ -101,6 +110,9 @@ abstract class DBTable {
 
   /// 값을 갱신합니다.
   Future<void> update() async => (await DB.getInstance()).update(this);
+
+  /// 값을 갱신합니다.
+  Future<void> delete() async => (await DB.getInstance()).delete(this);
 
   @override
   String toString() {
