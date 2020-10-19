@@ -111,7 +111,7 @@ abstract class DBTable {
   /// 값을 갱신합니다.
   Future<void> update() async => (await DB.getInstance()).update(this);
 
-  /// 값을 갱신합니다.
+  /// 값을 삭제합니다.
   Future<void> delete() async => (await DB.getInstance()).delete(this);
 
   @override
