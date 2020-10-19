@@ -3,6 +3,14 @@ import 'package:longlive/models/habit.dart';
 import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 
+/// ## 첫 사용자 화면
+/// ### 생김새
+/// - 이름 및 성별 선택
+/// - 습관 선택
+///
+/// ### 기능
+/// - 이름 및 성별 선택 후, 등록 가능
+/// - 습관은 선택 안해도 되지만, 대신 실수 방지를 위해 경고창 날림
 class RegisterWidget extends StatefulWidget {
   @override
   State createState() => _State();

@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/register.dart';
 
+/// ## 초기화면
+/// ### 생김새
+/// - 중앙에 앱 로고
+///
+/// ### 기능
+/// - 잠시 후, 메인화면으로 이동
+/// - 첫 사용자는, 첫 사용자 화면으로 이동
 class InitWidget extends StatefulWidget {
   @override
   State createState() => _State();

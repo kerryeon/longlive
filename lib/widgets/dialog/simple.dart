@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 네/아니오 선택이 가능한 알림창을 날립니다.
 Future<void> showYesNoDialog({
   BuildContext context,
   String title = '알림',
