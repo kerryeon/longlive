@@ -1,3 +1,5 @@
+import 'package:longlive/models/habit.dart';
+
 enum Gender {
   Male,
   Female,
@@ -17,12 +19,27 @@ extension GenderExtension on Gender {
 }
 
 class User {
-  static final User _singleton = User._internal();
-  factory User() => _singleton;
+  final Gender gender;
+  final int age;
+  final List<Habit> habits;
 
-  User._internal();
+  User({
+    this.gender,
+    this.age,
+    this.habits,
+  });
 
-  bool isLoggedIn = false;
+  static User _instance;
 
-  void load() {}
+  /// 유저 인스턴스를 가져옵니다.
+  /// 정보가 초기화되지 않았다면, 이를 초기화합니다.
+  static Future<User> getInstance() async {
+    return null;
+  }
+
+  /// 유저 인스턴스를 임의로 초기화합니다.
+  /// 단, 저장은 수동으로 진행됩니다.
+  void initialize() {
+    _instance = this;
+  }
 }
