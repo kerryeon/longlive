@@ -43,4 +43,3 @@ app.*.map.json
 # Editor
 /.vscode/
 /.idea/
-lib/widgets/intro/register.dart
