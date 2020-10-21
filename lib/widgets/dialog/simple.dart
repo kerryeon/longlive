@@ -20,15 +20,15 @@ Future<void> showYesNoDialog({
             TextButton(
               child: Text('네'),
               onPressed: () {
-                if (onAccept != null) onAccept();
                 Navigator.of(context).pop();
+                if (onAccept != null) onAccept();
               },
             ),
             TextButton(
               child: Text('아니오'),
               onPressed: () {
-                if (onDeny != null) onDeny();
                 Navigator.of(context).pop();
+                if (onDeny != null) onDeny();
               },
             ),
           ],
