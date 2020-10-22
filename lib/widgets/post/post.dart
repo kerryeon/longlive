@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/post.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:longlive/widgets/image/carousel.dart';
 import 'package:longlive/widgets/post/board.dart';
-import 'package:photo_view/photo_view.dart';
 
 /// ## 게시글 위젯
 /// ### 생김새

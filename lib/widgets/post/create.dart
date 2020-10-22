@@ -3,7 +3,6 @@ import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 import 'package:longlive/widgets/image/carousel.dart';
 import 'package:longlive/widgets/post/board.dart';
-import 'package:unicorndial/unicorndial.dart';
 
 /// ## 게시글 작성 위젯
 /// ### 생김새

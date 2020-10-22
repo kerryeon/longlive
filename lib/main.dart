@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/res/app.dart';
-import 'package:longlive/widgets/intro/init.dart';
 import 'package:longlive/widgets/main.dart';
 
 // 초기 화면에서 앱이 시작합니다.
