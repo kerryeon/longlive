@@ -36,6 +36,7 @@ dependencies:
   intl:
 
   # Good Utility
+  http:
   double_back_to_close_app: ^1.2.0
   hashtagable: ^1.0.3
 

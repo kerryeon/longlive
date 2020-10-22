@@ -25,7 +25,7 @@ class PostBoardWidget extends StatefulWidget {
 
   const PostBoardWidget({
     this.date = false,
-    this.sort = false,
+    this.sort = true,
   });
 
   @override

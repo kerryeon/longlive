@@ -20,9 +20,6 @@ class FavoritesWidget extends StatefulWidget implements ContentWidget {
 class _State extends State {
   @override
   Widget build(BuildContext context) {
-    return PostBoardWidget(
-      date: false,
-      sort: true,
-    );
+    return PostBoardWidget(date: false);
   }
 }

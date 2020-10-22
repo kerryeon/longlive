@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/widgets/content/base.dart';
 import 'package:longlive/widgets/info/base.dart';
-import 'package:longlive/widgets/info/change.dart';
+import 'package:longlive/widgets/info/habits.dart';
 import 'package:longlive/widgets/info/licenses.dart';
 import 'package:longlive/widgets/info/posts.dart';
 import 'package:longlive/widgets/info/terms.dart';
@@ -26,7 +26,7 @@ class UserInfoWidget extends StatefulWidget implements ContentWidget {
 class _State extends State {
   final List<UserInfo> infos = [
     MyPostsInfo(),
-    UpdateInfo(),
+    HabitsInfo(),
     TermsInfo(),
     LicensesInfo(),
     WithdrawalInfo(),
@@ -48,7 +48,7 @@ class _State extends State {
                 (i) => Card(
                   child: ListTile(
                     title: Text(i.label),
-                    onTap: i.onPressed,
+                    onTap: () => i.onPressed(context),
                   ),
                 ),
               )

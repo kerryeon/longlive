@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:longlive/models/habit.dart';
 import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
+import 'package:longlive/widgets/info/habits.dart';
 import 'package:longlive/widgets/intro/terms.dart';
 
 /// ## 첫 사용자 화면
@@ -86,39 +87,9 @@ class _State extends State {
                 '아래에서 해당하는 습관/질병을 골라주세요',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
-              GridView(
-                shrinkWrap: true,
-                primary: false,
-                padding: const EdgeInsets.all(16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  // 한 줄에 표시할 카드 갯수
-                  crossAxisCount: 4,
-                ),
-                // 습관 목록
-                children: habits
-                    .map((x) => Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: FlatButton(
-                            color: x.enabled ? Colors.brown : x.ty.primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Center(
-                              child: Text(
-                                x.name,
-                                style: Theme.of(context).textTheme.button.apply(
-                                      color: x.enabled
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            onPressed: () =>
-                                setState(() => x.enabled = !x.enabled),
-                          ),
-                        ))
-                    .toList(),
+              HabitsContentWidget(
+                habits: habits,
+                onTap: (x) => setState(() => x.enabled != x.enabled),
               ),
             ],
           ),

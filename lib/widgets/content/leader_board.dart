@@ -24,10 +24,7 @@ class _State extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       // 중앙에 배치
-      body: PostBoardWidget(
-        date: true,
-        sort: true,
-      ),
+      body: PostBoardWidget(date: true),
       // 등록 버튼
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.post_add),

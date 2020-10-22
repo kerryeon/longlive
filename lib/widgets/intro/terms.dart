@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
-import 'package:path/path.dart';
+import 'package:longlive/widgets/info/terms.dart';
 
 /// ## 약관화면
 /// ### 생김새
@@ -18,26 +18,22 @@ class TermsWidget extends StatelessWidget {
       ),
       // 중앙에 배치
       body: Center(
-        child: Column(
+        child: ListView(
           children: [
             // 약관 텍스트
-            Container(
-              padding: const EdgeInsets.all(24),
-              child: Container(
-                alignment: Alignment.topLeft,
-                color: Color(0xffffe082),
-                padding: const EdgeInsets.all(18),
-                child: Text('[약관]\n\n 약관을 집어넣으면 됩니다.'),
-              ),
-            ),
+            TermsContentWidget(),
             // 동의 버튼
-            FlatButton(
-              color: Colors.amber,
-              child: Text(
-                '동의합니다',
-                style: Theme.of(context).textTheme.subtitle1,
+            Container(
+              padding: const EdgeInsets.fromLTRB(60, 12, 60, 14),
+              child: FlatButton(
+                color: Colors.amber,
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  '동의합니다',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                onPressed: () => _onAgree(context),
               ),
-              onPressed: () => _onAgree(context),
             ),
           ],
         ),

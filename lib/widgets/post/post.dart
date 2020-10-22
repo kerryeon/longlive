@@ -109,12 +109,18 @@ class _State extends State {
                 ButtonBar(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.report),
+                      icon: Icon(
+                        Icons.report,
+                        color: Colors.red,
+                      ),
                       tooltip: '신고하기',
                       onPressed: () {},
                     ),
                     IconButton(
-                      icon: Icon(Icons.favorite),
+                      icon: Icon(
+                        Icons.favorite,
+                        color: Colors.pink,
+                      ),
                       tooltip: '찜하기',
                       onPressed: () {},
                     ),
