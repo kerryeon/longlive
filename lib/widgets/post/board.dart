@@ -101,7 +101,7 @@ class _State extends State {
       ),
       // 중앙에 배치
       body: Center(
-        child: Column(
+        child: ListView(
           children: [
             Stack(
               alignment: Alignment.centerLeft,
@@ -150,15 +150,13 @@ class _State extends State {
 class PostBoardContentsWidget extends StatelessWidget {
   final List<PostInfo> infos;
 
-  final bool primary;
-
-  const PostBoardContentsWidget(this.infos, {this.primary = true});
+  const PostBoardContentsWidget(this.infos);
 
   @override
   Widget build(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      primary: primary,
+      primary: false,
       padding: const EdgeInsets.all(16),
       crossAxisCount: 2,
       childAspectRatio: 5.9 / 9.0,

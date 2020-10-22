@@ -53,12 +53,15 @@ class _BoardWidget extends StatelessWidget {
 
   /// 선택한 라이센스를 명세합니다.
   Future<void> _moveToPage(BuildContext context, LicenseInfo info) async {
-    final response = await http.get(info.url);
-
     var desc = info.url;
-    if (response.statusCode == 200) {
-      desc = response.body;
-    }
+
+    try {
+      final response = await http.get(info.url);
+
+      if (response.statusCode == 200) {
+        desc = response.body;
+      }
+    } catch (_) {}
 
     Navigator.of(context).push(
       MaterialPageRoute(

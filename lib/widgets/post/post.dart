@@ -54,7 +54,7 @@ class _State extends State {
               children: [
                 // 해시태그
                 Container(
-                  width: 280,
+                  width: MediaQuery.of(context).size.width - 102,
                   padding: const EdgeInsets.only(left: 12),
                   child: HashTagText(
                     text: info.tags.map((e) => '#$e').join(' '),
@@ -101,7 +101,7 @@ class _State extends State {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            PostBoardContentsWidget(relatives, primary: false),
+            PostBoardContentsWidget(relatives),
           ],
         ),
       ),
