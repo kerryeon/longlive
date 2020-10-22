@@ -1,3 +1,4 @@
+import 'package:longlive/models/user.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,6 +11,7 @@ class DB {
   /// 데이터베이스 테이블 정보
   static Map<String, Map<String, String>> get _tables {
     return {
+      UserInform.tableName: UserInform.types,
       Habit.tableName: Habit.types,
     };
   }

@@ -1,5 +1,40 @@
 import 'package:flutter/material.dart';
 
+/// 일반적인 메세지 알림창을 날립니다.
+Future<void> showMessageDialog({
+  BuildContext context,
+  String title = '알림',
+  String content,
+  void Function() onConfirm,
+  bool barrierDismissible = false,
+}) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: barrierDismissible,
+    builder: (BuildContext context) {
+      return WillPopScope(
+        child: AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onConfirm != null) onConfirm();
+              },
+            ),
+          ],
+        ),
+        onWillPop: () async {
+          if (barrierDismissible && onConfirm != null) onConfirm();
+          return true;
+        },
+      );
+    },
+  );
+}
+
 /// 네/아니오 선택이 가능한 알림창을 날립니다.
 Future<void> showYesNoDialog({
   BuildContext context,

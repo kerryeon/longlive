@@ -29,13 +29,13 @@ class _State extends State {
 
   /// 잠시 후 다음 화면으로 이동합니다.
   void _waitAndMove() {
-    Future.delayed(const Duration(seconds: 2), _moveToNextPage);
+    Future.delayed(const Duration(seconds: 2), _moveToNextWidget);
   }
 
   /// 다음 화면으로 이동합니다.
   /// 이때, 첫 사용자는 첫 사용자 화면으로 이동합니다. [RegisterWidget]
   /// 기존 사용자는 메인 화면으로 이동합니다. [MainWidget]
-  void _moveToNextPage() async {
+  void _moveToNextWidget() async {
     if (await User.getInstance() == null) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

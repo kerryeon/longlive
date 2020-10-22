@@ -26,6 +26,9 @@ class _State extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('반갑습니다'),
+      ),
       body: Container(
         // 가운데 맞춤
         alignment: Alignment.topCenter,
@@ -38,10 +41,6 @@ class _State extends State {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                '반갑습니다',
-                style: Theme.of(context).textTheme.headline3,
-              ),
               // 나이 선택
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
