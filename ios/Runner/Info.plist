@@ -41,6 +41,11 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<!-- Multi Image Picker -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Example usage description</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Example usage description</string>
 		<!-- YouTube Player -->
 		<key>io.flutter.embedded_views_preview</key>
 		<true/>
