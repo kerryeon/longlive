@@ -50,6 +50,7 @@ class _State extends State {
         // 카테고리 버튼
         leading: IconButton(
           icon: Icon(Icons.list),
+          tooltip: '카테고리',
           onPressed: () {},
         ),
         // 카테고리
@@ -58,6 +59,7 @@ class _State extends State {
         actions: [
           IconButton(
             icon: Icon(Icons.search),
+            tooltip: '검색',
             onPressed: () {},
           ),
         ],
@@ -83,7 +85,8 @@ class _State extends State {
                               aspectRatio: 17 / 16,
                               child: Image.network(
                                 'https://img.youtube.com/vi/${e.videoId}/3.jpg',
-                                fit: BoxFit.fill,
+                                fit: BoxFit.none,
+                                scale: 0.4,
                               ),
                             ),
                             // 제목

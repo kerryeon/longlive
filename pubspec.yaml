@@ -35,6 +35,13 @@ dependencies:
   # Number Formatting
   intl:
 
+  # Good Utility
+  double_back_to_close_app: ^1.2.0
+  hashtagable: ^1.0.3
+
+  # Photos
+  carousel_slider: ^2.3.1
+
   # YouTube Player
   url_launcher: ^5.7.6
   youtube_player_flutter: ^7.0.0

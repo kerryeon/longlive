@@ -26,6 +26,6 @@ class PostInfo {
   String get thumb => images[0];
 
   String get numLikesFormat {
-    return NumberFormat('#.###').format(numLikes);
+    return NumberFormat('#,###').format(numLikes);
   }
 }

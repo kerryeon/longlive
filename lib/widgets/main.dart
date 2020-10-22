@@ -1,3 +1,4 @@
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:longlive/widgets/content/base.dart';
 import 'package:longlive/widgets/content/favorites.dart';
@@ -33,7 +34,12 @@ class _State extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       // 컨텐츠
-      body: contents[_currentIndex],
+      body: DoubleBackToCloseApp(
+        child: contents[_currentIndex],
+        snackBar: const SnackBar(
+          content: Text('\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.'),
+        ),
+      ),
       // 하단 바 (탭)
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

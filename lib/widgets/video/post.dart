@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:longlive/models/video.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -25,10 +26,10 @@ class _State extends State {
 
   YoutubePlayerController _controller;
 
+  _State(this.info);
+
   /// 제목 표시
   bool appBar = true;
-
-  _State(this.info);
 
   @override
   Widget build(BuildContext context) {
@@ -95,5 +96,15 @@ class _State extends State {
 
     final url = 'https://www.youtube.com/watch?v=${info.videoId}';
     await launch(url);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    super.dispose();
   }
 }
