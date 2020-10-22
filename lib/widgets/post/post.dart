@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:longlive/widgets/image/carousel.dart';
 import 'package:longlive/widgets/post/board.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -31,8 +32,6 @@ class _State extends State {
 
   _State(this.info, this.relatives);
 
-  int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,47 +43,9 @@ class _State extends State {
       body: Center(
         child: ListView(
           children: [
-            // 이미지 목록
-            CarouselSlider(
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
-                enlargeCenterPage: true,
-                onPageChanged: (index, reason) {
-                  setState(() => _currentIndex = index);
-                },
-              ),
-              items: info.images.map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return InkWell(
-                      child: Image.network(i),
-                      onTap: () => _moveToFullScreenPage(i),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-            // Indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                info.images.length,
-                (index) => Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 2.0,
-                  ),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == index
-                        ? Color.fromRGBO(0, 0, 0, 0.9)
-                        : Color.fromRGBO(0, 0, 0, 0.4),
-                  ),
-                ),
-              ).toList(),
-            ),
+            CarouselToolWidget(CarouselToolController(
+              images: info.images.map((e) => NetworkImage(e)).toList(),
+            )),
             // 설명
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 18, 12, 24),
@@ -101,12 +62,14 @@ class _State extends State {
                     text: info.tags.map((e) => '#$e').join(' '),
                     basicStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.blue,
+                      color: Colors.black,
                     ),
                     decoratedStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.black,
+                      color: Colors.blue,
                     ),
+                    decorateAtSign: true,
+                    onTap: (x) => print(x),
                   ),
                 ),
                 // 신고 버튼 / 찜 버튼
@@ -143,32 +106,6 @@ class _State extends State {
             PostBoardContentsWidget(relatives, primary: false),
           ],
         ),
-      ),
-    );
-  }
-
-  /// 이미지를 전체화면으로 봅니다.
-  void _moveToFullScreenPage(String url) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => _FullScreenWidget(url),
-      ),
-    );
-  }
-}
-
-class _FullScreenWidget extends StatelessWidget {
-  final String url;
-
-  const _FullScreenWidget(this.url);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: PhotoView(
-        minScale: 0.5,
-        maxScale: 2.0,
-        imageProvider: NetworkImage(url),
       ),
     );
   }

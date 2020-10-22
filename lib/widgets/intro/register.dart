@@ -100,6 +100,7 @@ class _State extends State {
         visible: _isSelectedAll,
         child: FloatingActionButton(
           child: Icon(Icons.navigate_next),
+          tooltip: '다음',
           onPressed: _moveToNextPage,
         ),
       ),

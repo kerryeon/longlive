@@ -9,7 +9,9 @@ class MyPostsInfo implements UserInfo {
   Future<void> onPressed(BuildContext context) async {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => PostBoardWidget(),
+        builder: (BuildContext context) => PostBoardWidget(
+          PostBoardController(),
+        ),
       ),
     );
   }

@@ -17,34 +17,29 @@ import 'package:longlive/widgets/post/post.dart';
 /// ### 기능
 /// - 탭을 눌러 컨텐츠 전환
 class PostBoardWidget extends StatefulWidget {
-  /// 날짜 표시
-  final bool date;
+  final PostBoardController _controller;
 
-  /// 정렬 기능
-  final bool sort;
+  const PostBoardWidget(this._controller);
 
-  const PostBoardWidget({
-    this.date = false,
-    this.sort = true,
-  });
+  /// 오늘의 년/월 문자열
+  String get dateFormat {
+    final now = new DateTime.now();
+    return '${now.year}년 ${now.month}월';
+  }
 
   @override
-  State createState() {
-    return _State(
-      date: date,
-      sort: sort,
-    );
-  }
+  State createState() => _State(_controller, dateFormat);
 }
 
 class _State extends State {
-  final bool date;
-  final bool sort;
+  final PostBoardController _controller;
 
-  _State({
-    this.date,
-    this.sort,
-  });
+  final String dateFormat;
+
+  _State(
+    this._controller,
+    this.dateFormat,
+  );
 
   List<PostInfo> infos = [
     PostInfo(
@@ -83,6 +78,8 @@ class _State extends State {
 
   @override
   Widget build(BuildContext context) {
+    _controller._category = '비만';
+
     return Scaffold(
       appBar: AppBar(
         // 카테고리 버튼
@@ -111,21 +108,22 @@ class _State extends State {
               children: [
                 // 날짜
                 Visibility(
-                  visible: date,
+                  visible: _controller.date,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 12, 0, 12),
                     child: Text(
-                      '2020년 10월',
+                      dateFormat,
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                 ),
                 // 정렬
                 Visibility(
-                  visible: sort,
+                  visible: _controller.sort,
                   child: ButtonBar(
-                    alignment:
-                        date ? MainAxisAlignment.end : MainAxisAlignment.center,
+                    alignment: _controller.date
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.center,
                     children: [
                       FlatButton(
                         child: const Text('인기순'),
@@ -258,4 +256,24 @@ class PostBoardContentsWidget extends StatelessWidget {
       builder: (BuildContext context) => PostWidget(info, relatives),
     ));
   }
+}
+
+class PostBoardController {
+  /// 날짜 표시
+  final bool date;
+
+  /// 정렬 기능
+  final bool sort;
+
+  String _category;
+
+  PostBoardController({
+    this.date = false,
+    this.sort = true,
+    String category,
+  }) {
+    this._category = category;
+  }
+
+  String get category => _category;
 }

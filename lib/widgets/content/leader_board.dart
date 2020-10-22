@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/widgets/content/base.dart';
 import 'package:longlive/widgets/post/board.dart';
+import 'package:longlive/widgets/post/create.dart';
+import 'package:unicorndial/unicorndial.dart';
 
 /// ## 리더보드 컨텐츠
 /// ### 생김새
@@ -20,15 +22,34 @@ class LeaderBoardWidget extends StatefulWidget implements ContentWidget {
 }
 
 class _State extends State {
+  final PostBoardController _controller = PostBoardController(date: true);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // 중앙에 배치
-      body: PostBoardWidget(date: true),
+      body: PostBoardWidget(_controller),
       // 등록 버튼
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.post_add),
-        onPressed: () {},
+      floatingActionButton: UnicornDialer(
+        parentButton: Icon(Icons.post_add),
+        childButtons: [
+          UnicornButton(
+            hasLabel: true,
+            labelText: '등록하기',
+            currentButton: FloatingActionButton(
+              child: Icon(Icons.send),
+              onPressed: _moveToCreatePage,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _moveToCreatePage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => PostCreateWidget(_controller),
       ),
     );
   }
