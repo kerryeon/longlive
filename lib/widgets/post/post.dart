@@ -3,6 +3,7 @@ import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:longlive/widgets/post/board.dart';
+import 'package:photo_view/photo_view.dart';
 
 /// ## 게시글 위젯
 /// ### 생김새
@@ -55,7 +56,10 @@ class _State extends State {
               items: info.images.map((i) {
                 return Builder(
                   builder: (BuildContext context) {
-                    return Image.network(i);
+                    return InkWell(
+                      child: Image.network(i),
+                      onTap: () => _moveToFullScreenPage(i),
+                    );
                   },
                 );
               }).toList(),
@@ -139,6 +143,32 @@ class _State extends State {
             PostBoardContentsWidget(relatives, primary: false),
           ],
         ),
+      ),
+    );
+  }
+
+  /// 이미지를 전체화면으로 봅니다.
+  void _moveToFullScreenPage(String url) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => _FullScreenWidget(url),
+      ),
+    );
+  }
+}
+
+class _FullScreenWidget extends StatelessWidget {
+  final String url;
+
+  const _FullScreenWidget(this.url);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: PhotoView(
+        minScale: 0.5,
+        maxScale: 2.0,
+        imageProvider: NetworkImage(url),
       ),
     );
   }
