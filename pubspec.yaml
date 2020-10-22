@@ -32,6 +32,13 @@ dependencies:
   sqflite:
   path:
 
+  # Number Formatting
+  intl:
+
+  # YouTube Player
+  url_launcher: ^5.7.6
+  youtube_player_flutter: ^7.0.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

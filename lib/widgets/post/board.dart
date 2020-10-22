@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/post.dart';
+import 'package:longlive/widgets/post/post.dart';
 
 /// ## 게시글 목록 위젯
 /// ### 생김새
@@ -43,6 +45,20 @@ class _State extends State {
     this.date,
     this.sort,
   });
+
+  List<PostInfo> infos = [
+    PostInfo(
+      title: '가을 다이어트 "이것"이 최고!',
+      desc: '',
+      ownerId: 123,
+      date: 123123123,
+      numLikes: 3026,
+      images: [
+        'http://image.fomos.kr/contents/images/board/2019/1103/1572743242649190.jpg',
+      ],
+      tags: [],
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -107,52 +123,67 @@ class _State extends State {
               padding: const EdgeInsets.all(16),
               crossAxisCount: 2,
               childAspectRatio: 6.0 / 9.0,
-              children: [
-                Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // 썸네일
-                      AspectRatio(
-                        aspectRatio: 17 / 16,
-                        child: Image.network(
-                          'http://image.fomos.kr/contents/images/board/2019/1103/1572743242649190.jpg',
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      // 제목
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                        child: Text(
-                          '가을 다이어트 "이것"이 최고!',
-                          style: Theme.of(context).textTheme.subtitle2,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      // 찜 버튼
-                      Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+              children: infos
+                  .map(
+                    (e) => InkWell(
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.favorite),
-                              onPressed: () {},
+                            // 썸네일
+                            AspectRatio(
+                              aspectRatio: 17 / 16,
+                              child: Image.network(
+                                e.thumb,
+                                fit: BoxFit.fill,
+                              ),
                             ),
-                            Text('3,026'),
+                            // 제목
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                              child: Text(
+                                e.title,
+                                style: Theme.of(context).textTheme.subtitle2,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            // 찜 버튼
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.favorite),
+                                    onPressed: () {},
+                                  ),
+                                  Text(e.numLikesFormat),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                      onTap: () => _moveToPage(e),
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// 주어진 게시글을 보여주는 화면으로 이동합니다.
+  void _moveToPage(PostInfo info) async {
+    // 작성자의 다른 글 목록
+    final List<PostInfo> relatives = [];
+
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (BuildContext context) => PostWidget(info, relatives),
+    ));
   }
 }

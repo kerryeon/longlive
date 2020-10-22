@@ -3,14 +3,14 @@ class VideoInfo {
   final String desc;
   final String owner;
 
-  final String thumb;
+  final String videoId;
   final bool ad;
 
   const VideoInfo({
     this.title,
     this.desc,
     this.owner,
-    this.thumb,
+    this.videoId,
     this.ad,
   });
 }
