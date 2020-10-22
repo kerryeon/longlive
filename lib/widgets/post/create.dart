@@ -87,7 +87,7 @@ class _State extends State {
     var result = false;
     await showYesNoDialog(
       context: context,
-      content: '작성 중 취소시 저장이 되지 않습니다.\n정말 취소하시겠습니까?',
+      content: '작성 중 취소시 저장이 되지 않습니다. 정말 취소하시겠습니까?',
       onAccept: () => result = true,
     );
     return result;
