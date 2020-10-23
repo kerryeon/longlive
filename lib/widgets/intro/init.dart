@@ -14,7 +14,7 @@ import 'package:longlive/widgets/main.dart';
 class InitWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _waitAndTryLogin(context);
+    _tryLogin(context);
     return Scaffold(
       // 중앙에 배치
       body: Center(
@@ -22,11 +22,6 @@ class InitWidget extends StatelessWidget {
         child: Image.asset('assets/icons/logo.png'),
       ),
     );
-  }
-
-  /// 잠시 후 로그인을 시도합니다.
-  void _waitAndTryLogin(BuildContext context) {
-    Future.delayed(const Duration(seconds: 5), () => _tryLogin(context));
   }
 
   /// 로그인을 시도합니다.
