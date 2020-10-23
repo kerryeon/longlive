@@ -1,4 +1,4 @@
-from rest_framework import generics, serializers
+from rest_framework import generics, permissions, serializers
 
 from .. import models
 
@@ -15,11 +15,12 @@ class UserSerializer(serializers.ModelSerializer):
         return models.User.objects.create_user(
             validated_data.pop('age'),
             validated_data.pop('gender').id,
-            # **validated_data,
         )
 
 
 class UserView(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     serializer_class = UserSerializer
     lookup_field = 'pk'
 

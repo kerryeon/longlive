@@ -21,8 +21,8 @@ urlpatterns = [
     url(r'^api/v1/', include(router.urls)),
 
     # ApiViews
-    url(r'^api/v1/user/session/login', login.LoginView.as_view()),
-    url(r'^api/v1/user/session/logout', login.LogoutView.as_view()),
-    url(r'^api/v1/user/session/register', login.RegisterView.as_view()),
-    url(r'^api/v1/user', user.UserView.as_view()),
+    url(r'^api/v1/user/session/login/', login.LoginView.as_view()),
+    url(r'^api/v1/user/session/logout/', login.LogoutView.as_view()),
+    url(r'^api/v1/user/session/register/', login.RegisterView.as_view()),
+    url(r'^api/v1/user/', user.UserView.as_view()),
 ]

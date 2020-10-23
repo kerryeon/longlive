@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['age', 'gender']
 
     def __str__(self) -> str:
-        return f'{self.age}세 {self.gender}'
+        return f'[{self.id}] {self.age}세 {self.gender}'
 
 
 class UserLoginType(models.IntegerChoices):

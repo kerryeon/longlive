@@ -1,3 +1,9 @@
-from .api import urlpatterns
+from django.urls import path
 
-__all__ = ['urlpatterns']
+from . import api, views
+
+
+urlpatterns = [
+    *api.urlpatterns,
+    path('', views.home),
+]

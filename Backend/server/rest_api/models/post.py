@@ -1,3 +1,4 @@
+import hashlib
 import pathlib
 import uuid
 
@@ -11,7 +12,8 @@ class Post(models.Model):
     """게시글"""
     title = models.CharField(max_length=255)
     desc = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='posts')
     ty = models.ForeignKey(Habit, on_delete=models.CASCADE)
 
     date_create = models.DateTimeField(auto_now_add=True)
@@ -30,12 +32,28 @@ class PostImage(models.Model):
             filename (str): 업로드된 파일의 파일명
 
         Returns:
-            str: 저장할 파일경로. MEDIA_ROOT/imgs/<user_id>/<pid>.<extension>
+            str: 저장할 파일경로. MEDIA_ROOT/imgs/<sha256:user_id>/<sha256:pid>.<extension>
         """
-        user_id = self.post.user.id
-        pid = uuid.uuid4()
+        user_id = ('user_id_' + str(self.post.user.id)).encode('ASCII')
+        user_id = hashlib.sha256(user_id).hexdigest()
+        pid = str(uuid.uuid4()).encode('ASCII')
+        pid = hashlib.sha256(pid).hexdigest()
         extension = pathlib.Path(filename).suffix
         return f'imgs/{user_id}/{pid}{extension}'
 
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE,
+                             related_name='images')
     image = models.ImageField(upload_to=_save_image_to)
+
+
+class PostLiked(models.Model):
+    """찜한 게시글"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='likes')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE,
+                             related_name='likes')
+
+    date = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'post',)
