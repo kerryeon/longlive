@@ -21,6 +21,13 @@ class PostSerializer(serializers.ModelSerializer):
         model = models.Post
         fields = '__all__'
 
+    def create(self, validated_data):
+        images_data = self.context['request'].FILES
+        post = models.Post.objects.create(**validated_data)
+        for image_data in images_data.getlist('image'):
+            models.PostImage.objects.create(post=post, image=image_data)
+        return post
+
 
 class PostViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
