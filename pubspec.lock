@@ -84,10 +84,10 @@ packages:
   hashtagable:
     dependency: "direct main"
     description:
-      path: "Thirdparty/hashtagable"
-      relative: true
-    source: path
-    version: "1.0.3"
+      name: hashtagable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   http:
     dependency: "direct main"
     description:

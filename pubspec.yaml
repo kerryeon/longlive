@@ -38,10 +38,7 @@ dependencies:
   # Good Utility
   http:
   double_back_to_close_app: ^1.2.0
-  # TODO: uncomment it once the PR is approved.
-  # hashtagable: ^1.0.3
-  hashtagable:
-    path: ./Thirdparty/hashtagable
+  hashtagable: ^1.0.4
   unicorndial: ^1.1.5
 
   # Photos
