@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+/// 앱을 종료합니다.
+void exitApp() {
+  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+}
 
 /// 일반적인 메세지 알림창을 날립니다.
 Future<void> showMessageDialog({

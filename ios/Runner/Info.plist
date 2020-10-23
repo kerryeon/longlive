@@ -41,6 +41,28 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<!-- KakaoTalk -->
+		<key>KAKAO_APP_KEY</key>
+		<string>b5a5548ad6ff25d145583cc22d0e9846</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>kakaokompathauth</string>
+			<string>kakaob5a5548ad6ff25d145583cc22d0e9846</string>
+			<string>kakaolink</string>
+		</array>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>kakao_rediect_uri</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>kakaob5a5548ad6ff25d145583cc22d0e9846</string>
+				</array>
+			</dict>
+		</array>
 		<!-- Multi Image Picker -->
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Example usage description</string>

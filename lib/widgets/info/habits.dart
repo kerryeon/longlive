@@ -16,9 +16,9 @@ class HabitsInfo implements UserInfo {
 }
 
 class HabitsContentWidget extends StatelessWidget {
-  final List<Habit> habits;
+  final List<HabitToggle> habits;
 
-  final void Function(Habit) onTap;
+  final void Function(HabitToggle) onTap;
 
   const HabitsContentWidget({
     this.habits,
@@ -41,13 +41,13 @@ class HabitsContentWidget extends StatelessWidget {
             (x) => Padding(
               padding: const EdgeInsets.all(4),
               child: FlatButton(
-                color: x.enabled ? Colors.brown : x.ty.primaryColor,
+                color: x.enabled ? Colors.brown : x.habit.ty.color,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
-                    x.name,
+                    x.habit.name,
                     style: Theme.of(context).textTheme.button.apply(
                           color: x.enabled ? Colors.white : Colors.black,
                         ),
@@ -69,7 +69,7 @@ class _Widget extends StatefulWidget {
 }
 
 class _State extends State {
-  final List<Habit> habits = Habit.all();
+  final List<HabitToggle> habits = HabitToggle.all();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class _State extends State {
   }
 
   /// 선택한 습관 정보를 갱신합니다.
-  Future<void> _changeHabit(Habit habit) async {
+  Future<void> _changeHabit(HabitToggle habit) async {
     habit.enabled = !habit.enabled;
     setState(() {});
   }

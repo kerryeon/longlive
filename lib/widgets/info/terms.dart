@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/term.dart';
 import 'package:longlive/widgets/info/base.dart';
 
 /// ## 약관 보기 기능
@@ -23,7 +24,7 @@ class TermsContentWidget extends StatelessWidget {
         alignment: Alignment.topLeft,
         color: Color(0xFFFFE0B2),
         padding: const EdgeInsets.all(18),
-        child: Text('약관을 집어넣으면 됩니다.\n\n'),
+        child: Text(Term.getInstance().desc),
       ),
     );
   }

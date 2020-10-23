@@ -1,4 +1,4 @@
-package com.example.longlive
+package com.longlive.longlive
 
 import io.flutter.embedding.android.FlutterActivity
 

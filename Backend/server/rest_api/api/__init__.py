@@ -5,6 +5,7 @@ from rest_framework import routers
 from . import habit
 from . import login
 from . import post
+from . import term
 from . import user
 from . import video
 
@@ -14,6 +15,8 @@ router = routers.DefaultRouter()
 router.register(r'habits/all', habit.HabitViewSet)
 router.register(r'habits/types', habit.HabitTypeViewSet)
 router.register(r'posts/all', post.PostViewSet)
+router.register(r'term', term.TermViewSet)
+router.register(r'user/genders', user.UserGenderTypeViewSet)
 router.register(r'user/habits', habit.UserHabitViewSet)
 router.register(r'user/posts/all', post.UserPostViewSet)
 router.register(r'user/posts/liked/all', post.UserPostLikedViewSet)

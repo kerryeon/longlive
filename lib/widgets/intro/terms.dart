@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/login.dart';
+import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 import 'package:longlive/widgets/info/terms.dart';
+import 'package:longlive/widgets/main.dart';
 
 /// ## 약관화면
 /// ### 생김새
@@ -43,17 +46,28 @@ class TermsWidget extends StatelessWidget {
 
   /// 사용자가 약관에 동의했습니다.
   /// 가입을 마무리하고, 메인화면으로 이동합니다.
-  void _onAgree(BuildContext context) {
-    // 회원 정보를 저장합니다.
+  Future<void> _onAgree(BuildContext context) async {
+    // 서버에 회원가입을 요청합니다.
+    final result = await User.getInstance().register(context);
 
-    // 환영 메세지
-    showMessageDialog(
-      context: context,
-      content: '가입을 환영합니다 ^^',
-      onConfirm: () => _moveToMainWidget(context),
-    );
+    // 환영 메세지를 띄우고, 메인화면으로 이동합니다.
+    if (result) {
+      showMessageDialog(
+        context: context,
+        content: '가입을 환영합니다 ^^',
+        onConfirm: () => _moveToMainWidget(context),
+      );
+    }
   }
 
-  /// 메인 화면으로 이동합니다.
-  void _moveToMainWidget(BuildContext context) {}
+  /// 다시 로그인 후, 메인 화면으로 이동합니다.
+  Future<void> _moveToMainWidget(BuildContext context) async {
+    if (await UserLogin().tryLogin(context)) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) => MainWidget(),
+        ),
+      );
+    }
+  }
 }

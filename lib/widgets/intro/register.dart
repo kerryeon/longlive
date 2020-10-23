@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/habit.dart';
+import 'package:longlive/models/term.dart';
 import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 import 'package:longlive/widgets/info/habits.dart';
@@ -22,7 +23,7 @@ class RegisterWidget extends StatefulWidget {
 class _State extends State {
   int userAge;
   Gender userGender;
-  final List<Habit> habits = Habit.all();
+  final List<HabitToggle> habits = HabitToggle.all();
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +72,10 @@ class _State extends State {
                   DropdownButton(
                     hint: Text('성별을 선택하세요'),
                     value: userGender,
-                    items: [Gender.Male, Gender.Female]
+                    items: Gender.all.values
                         .map((x) => DropdownMenuItem(
                               value: x,
-                              child: Text(x.description),
+                              child: Text(x.name),
                             ))
                         .toList(),
                     onChanged: (x) => setState(() => userGender = x),
@@ -89,7 +90,7 @@ class _State extends State {
               ),
               HabitsContentWidget(
                 habits: habits,
-                onTap: (x) => setState(() => x.enabled != x.enabled),
+                onTap: (x) => setState(() => x.enabled = !x.enabled),
               ),
             ],
           ),
@@ -125,10 +126,15 @@ class _State extends State {
       return;
     }
 
+    // 선택한 습관 정보 추출
+    final habits =
+        this.habits.where((e) => e.enabled).map((e) => e.habit).toList();
+
     // 유저 정보 갱신
     final user = User(
       gender: userGender,
       age: userAge,
+      term: Term.getInstance().id,
       habits: habits,
     );
     user.initialize();

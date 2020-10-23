@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/res/app.dart';
+import 'package:longlive/widgets/intro/init.dart';
 import 'package:longlive/widgets/main.dart';
 
 // 초기 화면에서 앱이 시작합니다.
@@ -16,8 +17,8 @@ class AppWidget extends StatelessWidget {
         primarySwatch: Colors.brown,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainWidget(),
-      // home: InitWidget(),
+      // home: MainWidget(),
+      home: InitWidget(),
     );
   }
 }

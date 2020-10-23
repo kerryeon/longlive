@@ -25,7 +25,8 @@ class Habit(models.Model):
 
 class UserHabit(models.Model):
     """사용자 습관"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='habits')
     ty = models.ForeignKey(Habit, on_delete=models.CASCADE)
 
     class Meta:

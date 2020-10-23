@@ -1,173 +1,99 @@
-import 'package:longlive/models/db.dart';
+import 'package:flutter/material.dart';
+import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
+import 'package:longlive/models/login.dart';
+import 'package:longlive/models/net.dart';
 
-enum Gender {
-  Unknown,
-  Male,
-  Female,
-}
+class Gender extends DBTable {
+  final String name;
 
-extension GenderExtension on Gender {
-  String get description {
-    switch (this) {
-      case Gender.Male:
-        return '남성';
-      case Gender.Female:
-        return '여성';
-      case Gender.Unknown:
-      default:
-        return '알 수 없음';
-    }
-  }
-
-  static Gender fromDescription(String description) {
-    switch (description) {
-      case '남성':
-        return Gender.Male;
-      case '여성':
-        return Gender.Unknown;
-      case '알 수 없음':
-      default:
-        return Gender.Unknown;
-    }
-  }
-}
-
-class UserInform extends DBTable {
-  // --------------
-  //  Table Fields
-  // --------------
-
-  final Gender gender;
-  final int age;
-
-  // -------------------
-  //  Table Constructor
-  // -------------------
-
-  const UserInform({
+  const Gender({
     int id,
-    this.gender,
-    this.age,
+    this.name,
   }) : super(id);
 
-  // ----------------
-  //  Object Methods
-  // ----------------
+  static Map<int, Gender> _all = {};
+  static Map<int, Gender> get all => _all;
 
-  // -----------------------
-  //  Object Static Methods
-  // -----------------------
-
-  //------------------------------------------------------------------------//
-  // ---------------
-  //  Table Methods
-  // ---------------
-
-  static String get tableName => 'users';
-  static Map<String, String> get types {
-    return {
-      'id': 'INTEGER PRIMARY KEY AUTOINCREMENT',
-      'gender': 'TEXT',
-      'age': 'INTEGER',
-    };
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'gender': gender.description,
-      'age': age,
-    };
-  }
-
-  static UserInform fromMap(Map<String, dynamic> map) {
-    return UserInform(
-      id: map['id'],
-      gender: GenderExtension.fromDescription(map['gender']),
-      age: map['age'],
+  static Future<void> initialize(BuildContext context) async {
+    _all = await Net.getList(
+      context: context,
+      url: "user/genders",
+      generator: fromJson,
     );
   }
 
-  // ----------------------
-  //  Table Static Methods
-  // ----------------------
-
-  String get getTableName => tableName;
-
-  static Future<UserInform> getUnique() async {
-    final db = await DB.getInstance();
-    final List<Map<String, dynamic>> maps = await db.inner.query(tableName);
-    return UserInform.fromMap(maps[0]);
+  static Gender fromJson(Map<String, dynamic> json) {
+    return Gender(
+      id: json['id'],
+      name: json['name'],
+    );
   }
 
-  //------------------------------------------------------------------------//
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
-class User extends UserInform {
-  // --------------
-  //  Table Fields
-  // --------------
+class User extends DBTable {
+  final int age;
+  final Gender gender;
 
-  final List<Habit> habits;
+  final int term;
 
-  // -------------------
-  //  Table Constructor
-  // -------------------
+  List<Habit> habits = [];
 
   User({
     int id,
-    Gender gender,
-    int age,
+    this.age,
+    this.gender,
+    this.term,
     this.habits,
-  }) : super(id: id, gender: gender, age: age);
-
-  // ----------------
-  //  Object Methods
-  // ----------------
-
-  /// 유저 인스턴스를 임의로 초기화합니다.
-  /// 단, 저장은 수동으로 진행됩니다.
-  void initialize() {
-    _instance = this;
-  }
-
-  // -----------------------
-  //  Object Static Methods
-  // -----------------------
+  }) : super(id);
 
   static User _instance;
+  static User getInstance() => _instance;
 
-  /// 유저 인스턴스를 가져옵니다.
-  /// 정보가 초기화되지 않았다면, 이를 초기화합니다.
-  static Future<User> getInstance() async {
-    return null;
+  void initialize() => _instance = this;
+
+  Future<bool> register(BuildContext context) async {
+    final user = toJson();
+    final habits = user.remove('habits');
+
+    return Net.createOneWithQuery(
+      context: context,
+      url: 'user/session/register',
+      queries: {
+        'session': await UserLogin().toJson(context),
+        'user': user,
+        'habits': habits,
+      },
+    );
   }
 
-  //------------------------------------------------------------------------//
-  // ---------------
-  //  Table Methods
-  // ---------------
-
-  /// 데이터베이스에 값을 추가합니다.
-  @override
-  Future<void> insert() async {
-    super.insert();
-    final db = await DB.getInstance();
-    for (final habit in habits) {
-      db.insert(habit);
-    }
+  static User fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      age: json['age'],
+      gender: Gender.all[json['gender']],
+      term: json['term'],
+    );
   }
 
-  /// 값을 갱신합니다.
-  @override
-  Future<void> update() async {
-    super.update();
-    final db = await DB.getInstance();
-    for (final habit in habits) {
-      db.update(habit);
-    }
+  Map<String, dynamic> toJson() {
+    return {
+      'age': age,
+      'gender': gender.id,
+      'term': term,
+      'habits': habits.map((e) => e.id).toList(),
+    };
   }
-
-  //------------------------------------------------------------------------//
 }

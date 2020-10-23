@@ -1,6 +1,8 @@
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 
+from .term import Term
+
 
 class UserGenderType(models.Model):
     """습관 종류"""
@@ -11,18 +13,20 @@ class UserGenderType(models.Model):
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, age, gender, id, password, is_staff, is_superuser):
+    def _create_user(self, age, gender, term, id, password, is_staff, is_superuser):
         if not age:
             raise ValueError('Users must have an age')
         if not gender:
             raise ValueError('Users must have a specific gender')
 
         gender = UserGenderType.objects.filter(id=gender)[0]
+        term = Term.objects.filter(id=term)[0]
 
         user = self.model(
             id=id,
             age=age,
             gender=gender,
+            term=term,
             is_active=True,
             is_staff=is_staff or is_superuser,
             is_superuser=is_superuser,
@@ -35,17 +39,19 @@ class UserManager(BaseUserManager):
     def get_by_natural_key(self, id):
         return self.get(**{'{}__iexact'.format(self.model.USERNAME_FIELD): id})
 
-    def create_user(self, age, gender, id=None, password=None):
-        return self._create_user(age, gender, id, password, False, False)
+    def create_user(self, age, gender, term, id=None, password=None):
+        return self._create_user(age, gender, term, id, password, False, False)
 
-    def create_superuser(self, age, gender, id, password):
-        return self._create_user(age, gender, id, password, True, True)
+    def create_superuser(self, age, gender, term, id, password):
+        return self._create_user(age, gender, term, id, password, True, True)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """사용자 정보"""
     age = models.IntegerField()
     gender = models.ForeignKey(UserGenderType, on_delete=models.CASCADE)
+
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -72,3 +78,6 @@ class UserSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ty = models.IntegerField(choices=UserLoginType.choices)
     remote_id = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('ty', 'remote_id',)

@@ -28,10 +28,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
 
-  # SQLite Database
-  sqflite:
-  path:
-
   # Number Formatting
   intl:
 
@@ -40,6 +36,9 @@ dependencies:
   double_back_to_close_app: ^1.2.0
   hashtagable: ^1.0.4
   unicorndial: ^1.1.5
+
+  # KakaoTalk
+  kakao_flutter_sdk: ^0.5.2
 
   # Photos
   carousel_slider: ^2.3.1

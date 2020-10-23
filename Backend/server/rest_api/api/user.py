@@ -1,13 +1,28 @@
-from rest_framework import generics, permissions, serializers
+from rest_framework import generics, permissions, serializers, viewsets
 
 from .. import models
+from .habit import UserHabitSerializer
+
+
+class UserGenderTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserGenderType
+        fields = '__all__'
+
+
+class UserGenderTypeViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+
+    queryset = models.UserGenderType.objects.all()
+    serializer_class = UserGenderTypeSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
+    habits = UserHabitSerializer(many=True, required=False, default=[])
 
     class Meta:
         model = models.User
-        fields = ('id', 'age', 'gender')
+        fields = ('id', 'age', 'gender', 'term', 'habits',)
         read_only_fields = ('id',)
         extra_kwargs = {}
 
@@ -15,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         return models.User.objects.create_user(
             validated_data.pop('age'),
             validated_data.pop('gender').id,
+            validated_data.pop('term').id,
         )
 
 
