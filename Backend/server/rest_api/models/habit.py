@@ -27,3 +27,9 @@ class UserHabit(models.Model):
     """사용자 습관"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ty = models.ForeignKey(Habit, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'ty',)
+
+    def __str__(self) -> str:
+        return f'[{self.user.id}] {self.ty}'

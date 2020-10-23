@@ -10,7 +10,7 @@ class HabitTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class HabitTypeViewSet(viewsets.ModelViewSet):
+class HabitTypeViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
     queryset = models.HabitType.objects.all()
@@ -24,7 +24,7 @@ class HabitSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class HabitViewSet(viewsets.ModelViewSet):
+class HabitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
     queryset = models.Habit.objects.all()
@@ -32,11 +32,13 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
 class UserHabitSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     class Meta:
         model = models.UserHabit
-        fields = ('ty',)
-        read_only_fields = ('ty',)
+        fields = ('user', 'ty',)
 
 
 class UserHabitViewSet(viewsets.ModelViewSet):

@@ -19,6 +19,9 @@ class Post(models.Model):
     date_create = models.DateTimeField(auto_now_add=True)
     date_modify = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class PostImage(models.Model):
     """게시글 이미지"""
@@ -45,6 +48,9 @@ class PostImage(models.Model):
                              related_name='images')
     image = models.ImageField(upload_to=_save_image_to)
 
+    def __str__(self) -> str:
+        return f'{self.post} ({str(self.image).split("/")[-1]})'
+
 
 class PostLiked(models.Model):
     """찜한 게시글"""
@@ -54,6 +60,9 @@ class PostLiked(models.Model):
                              related_name='likes')
 
     date = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         unique_together = ('user', 'post',)
+
+    def __str__(self) -> str:
+        return f'[{self.user.id}] {self.post}'

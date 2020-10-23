@@ -8,6 +8,9 @@ class VideoOwner(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Video(models.Model):
     """추천영상"""
@@ -21,3 +24,6 @@ class Video(models.Model):
 
     date_create = models.DateTimeField(auto_now_add=True)
     date_modify = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'[{self.owner}] {self.title}'
