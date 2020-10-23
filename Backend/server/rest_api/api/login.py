@@ -88,14 +88,6 @@ class LoginBackend(BaseBackend):
             return None
 
 
-"""
-{
-    "ty": 1,
-    "token": "YKHN5_CaxGQOoDYNSEJ4GvMM_S_swsjIikny4Qo9cpcAAAF1VgvcQg"
-}
-"""
-
-
 class LoginSessionSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=255)
 
@@ -165,7 +157,6 @@ class RegisterView(generics.CreateAPIView):
         logout(request)
         return super().post(request)
 
-    # {"session":{"ty":1,"token":"YKHN5_CaxGQOoDYNSEJ4GvMM_S_swsjIikny4Qo9cpcAAAF1VgvcQg"},"user":{"age":26,"gender":2,"term":1},"habits":[2,11]}
     def perform_create(self, serializer):
         session = LoginSessionSerializer(data=serializer.data['session'])
         session.is_valid(raise_exception=True)
