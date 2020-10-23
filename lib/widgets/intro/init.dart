@@ -11,15 +11,10 @@ import 'package:longlive/widgets/main.dart';
 /// ### 기능
 /// - 잠시 후, 메인화면으로 이동
 /// - 첫 사용자는, 첫 사용자 화면으로 이동
-class InitWidget extends StatefulWidget {
-  @override
-  State createState() => _State();
-}
-
-class _State extends State {
+class InitWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _waitAndTryLogin();
+    _waitAndTryLogin(context);
     return Scaffold(
       // 중앙에 배치
       body: Center(
@@ -30,13 +25,13 @@ class _State extends State {
   }
 
   /// 잠시 후 로그인을 시도합니다.
-  void _waitAndTryLogin() {
-    Future.delayed(const Duration(seconds: 2), _tryLogin);
+  void _waitAndTryLogin(BuildContext context) {
+    Future.delayed(const Duration(seconds: 5), () => _tryLogin(context));
   }
 
   /// 로그인을 시도합니다.
   /// 이후, 적절한 화면으로 이동합니다.
-  Future<void> _tryLogin() async {
+  Future<void> _tryLogin(BuildContext context) async {
     final userLogin = UserLogin();
 
     // 변수를 초기화합니다.
@@ -46,13 +41,13 @@ class _State extends State {
     final result = await userLogin.tryLogin(context);
 
     // 로그인에 성공하면, 다음 화면으로 이동합니다.
-    if (result) _moveToNextWidget();
+    if (result) _moveToNextWidget(context);
   }
 
   /// 다음 화면으로 이동합니다.
   /// 이때, 첫 사용자는 첫 사용자 화면으로 이동합니다. [RegisterWidget]
   /// 기존 사용자는 메인 화면으로 이동합니다. [MainWidget]
-  void _moveToNextWidget() {
+  void _moveToNextWidget(BuildContext context) {
     final widget = User.getInstance() != null ? MainWidget() : RegisterWidget();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

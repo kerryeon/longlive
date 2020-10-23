@@ -44,7 +44,7 @@ class UserLogin {
   }
 
   Future<String> tryGetToken(BuildContext context) async {
-    return 'YKHN5_CaxGQOoDYNSEJ4GvMM_S_swsjIikny4Qo9cpcAAAF1VgvcQg';
+    // return 'YKHN5_CaxGQOoDYNSEJ4GvMM_S_swsjIikny4Qo9cpcAAAF1VgvcQg';
 
     try {
       final tokenStored = await Kakao.AccessTokenStore.instance.fromStore();
@@ -68,19 +68,21 @@ class UserLogin {
         content: NetMessage.loginFailure,
         onConfirm: exitApp,
       );
+      return null;
     } catch (_) {
       await showMessageDialog(
         context: context,
         content: NetMessage.internalFailure,
         onConfirm: exitApp,
       );
+      return null;
     }
   }
 
   Future<Map<String, dynamic>> toJson(BuildContext context) async {
     return {
       'ty': _loginType,
-      'token': await tryGetToken(context),
+      'token': await tryGetToken(context) ?? 'undefined',
     };
   }
 }
