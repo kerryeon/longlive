@@ -53,6 +53,15 @@
                 <data android:host="oauth" android:scheme="kakaob5a5548ad6ff25d145583cc22d0e9846" />
             </intent-filter>
         </activity>
+        <!-- KakaoTalk -->
+        <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
+            <intent-filter android:label="flutter_web_auth">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="kakaob5a5548ad6ff25d145583cc22d0e9846" android:host="oauth"/>
+            </intent-filter>
+        </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
