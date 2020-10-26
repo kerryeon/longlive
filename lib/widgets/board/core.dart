@@ -135,7 +135,7 @@ class _Search extends SearchDelegate<String> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.arrow_back),
-      onPressed: () => Navigator.pop(context),
+      onPressed: () => close(context, null),
     );
   }
 
@@ -156,7 +156,8 @@ class _Search extends SearchDelegate<String> {
 
   Widget buildEntity(BuildContext context, String title) {
     return ListTile(
-      title: Center(child: Text(title)),
+      leading: Icon(Icons.history),
+      title: Text(title),
       onTap: () => storeAndReturn(context, title),
     );
   }
@@ -164,6 +165,6 @@ class _Search extends SearchDelegate<String> {
   void storeAndReturn(BuildContext context, String value) {
     history.remove(value);
     history.add(value);
-    Navigator.of(context).pop(value);
+    return close(context, value);
   }
 }
