@@ -1,6 +1,8 @@
+from django_filters import rest_framework as filters
 from rest_framework import permissions, serializers, viewsets
 
 from .. import models
+from .tag import *
 
 
 class VideoOwnerSerializer(serializers.ModelSerializer):
@@ -9,12 +11,25 @@ class VideoOwnerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class VideoSerializer(serializers.ModelSerializer):
-    owner = VideoOwnerSerializer()
+class VideoFilter(filters.FilterSet):
+    tags = TagFilter(field_name='tags__name')
 
     class Meta:
         model = models.Video
-        fields = ('title', 'desc', 'owner', 'ty', 'video_id', 'ad',)
+        fields = {
+            'title': ['contains'],
+            'date_create': ['gt', 'lt'],
+        }
+
+
+class VideoSerializer(serializers.ModelSerializer):
+    owner = VideoOwnerSerializer()
+
+    tags = TagSerializerField()
+
+    class Meta:
+        model = models.Video
+        fields = '__all__'
 
 
 class VideoViewSet(viewsets.ReadOnlyModelViewSet):
@@ -22,3 +37,4 @@ class VideoViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = models.Video.objects.all()
     serializer_class = VideoSerializer
+    filterset_class = VideoFilter

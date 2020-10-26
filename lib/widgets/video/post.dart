@@ -72,7 +72,7 @@ class _State extends State {
               alignment: Alignment.centerRight,
               child: FlatButton(
                 child: Text(
-                  info.owner,
+                  info.ownerName,
                   style: TextStyle(color: Colors.black45),
                 ),
                 onPressed: _moveToYouTube,
@@ -94,8 +94,7 @@ class _State extends State {
     // 실행중인 영상을 정지합니다.
     _controller.pause();
 
-    final url = 'https://www.youtube.com/watch?v=${info.videoId}';
-    await launch(url);
+    return launch(info.url);
   }
 
   @override

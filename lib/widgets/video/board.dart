@@ -19,29 +19,48 @@ class VideoBoardWidget extends StatefulWidget {
 }
 
 class _State extends State {
-  final List<VideoInfo> videos = [
-    VideoInfo(
-      title: '몸 좋아 보이려면 \'무조건\' 키워야 하는 근육 부위 TOP4',
-      desc: '몸 좋아 보이려면 \'무조건\' 키워야 하는 근육 부위 TOP4',
-      owner: '헬창TV',
-      videoId: 'slZVJPxCqpQ',
-      ad: true,
-    ),
-    VideoInfo(
-      title: '당신이 \'절대\' 몰랐던 여자 체지방별 몸매 변화 (feat 핏블리)',
-      desc: '당신이 \'절대\' 몰랐던 여자 체지방별 몸매 변화 (feat 핏블리)',
-      owner: '헬창TV',
-      videoId: 'tY42IlwahGU',
-      ad: true,
-    ),
-    VideoInfo(
-      title: '김계란이 알려주는 \'식단\'에 따른 운동방법',
-      desc: '저탄고지와 고탄저지에 대한 정보영상 입니다.',
-      owner: '피지컬갤러리',
-      videoId: '4lEm4pDL8ns',
-      ad: false,
-    ),
-  ];
+  String category = '';
+
+  List<VideoInfo> infos = [];
+
+  // 쿼리
+  VideoQuery query = VideoQuery(
+    tags: [],
+  );
+
+  // 쿼리 갱신중
+  bool _isLoading = false;
+
+  Future<void> _reload({
+    String title,
+    List<String> tags,
+  }) async {
+    if (!mounted || _isLoading) return;
+    _isLoading = true;
+    setState(() => category = '비만');
+
+    // 쿼리 갱신
+    if (title != null) {
+      query.title = title;
+    }
+    if (tags != null) {
+      query.tags = tags;
+    }
+
+    // 쿼리 요청
+    final infos = await query.getList(context);
+
+    // 화면 갱신
+    if (!mounted) return;
+    _isLoading = false;
+    setState(() => this.infos = infos);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _reload());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +73,7 @@ class _State extends State {
           onPressed: () {},
         ),
         // 카테고리
-        title: Text('비만'),
+        title: Text(category),
         // 검색 버튼
         actions: [
           IconButton(
@@ -70,7 +89,7 @@ class _State extends State {
           padding: const EdgeInsets.all(16),
           crossAxisCount: 2,
           childAspectRatio: 6.8 / 9.0,
-          children: videos
+          children: infos
               .map(
                 (e) => Stack(
                   children: [
@@ -84,7 +103,7 @@ class _State extends State {
                             AspectRatio(
                               aspectRatio: 17 / 16,
                               child: Image.network(
-                                'https://img.youtube.com/vi/${e.videoId}/3.jpg',
+                                e.thumb,
                                 fit: BoxFit.none,
                                 scale: 0.4,
                               ),

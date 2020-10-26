@@ -1,9 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
-
-// 태그 구분자(delimiter)
-final String _tagDelim = '\n';
+import 'package:longlive/models/net.dart';
 
 class PostInfo extends DBTable {
   final String title;
@@ -66,7 +65,7 @@ class PostInfo extends DBTable {
       'title': title,
       'desc': desc,
       'ty': ty.id,
-      'tags': tags.join(_tagDelim),
+      'tags': tags,
       'images': images,
     };
   }
@@ -105,6 +104,15 @@ class PostQuery {
     map['date_create__gt'] = dateBegin.toIso8601String();
     map['date_create__lt'] = dateEnd.toIso8601String();
     return map;
+  }
+
+  Future<List<PostInfo>> getList(BuildContext context, String url) async {
+    return Net().getList(
+      context: context,
+      url: url,
+      generator: PostInfo.fromJson,
+      queries: toJson(),
+    );
   }
 }
 

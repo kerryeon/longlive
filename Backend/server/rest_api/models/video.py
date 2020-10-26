@@ -1,4 +1,5 @@
 from django.db import models
+from taggit.managers import TaggableManager
 
 from .habit import Habit
 
@@ -21,6 +22,8 @@ class Video(models.Model):
 
     video_id = models.CharField(max_length=63)
     ad = models.BooleanField(default=False)
+
+    tags = TaggableManager()
 
     date_create = models.DateTimeField(auto_now_add=True)
     date_modify = models.DateTimeField(auto_now=True)

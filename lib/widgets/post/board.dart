@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:longlive/models/net.dart';
 import 'package:longlive/models/post.dart';
 import 'package:longlive/widgets/post/like.dart';
 import 'package:longlive/widgets/post/post.dart';
@@ -79,12 +78,7 @@ class _State extends State {
     }
 
     // 쿼리 요청
-    final infos = await Net().getList(
-      context: context,
-      url: url,
-      generator: PostInfo.fromJson,
-      queries: query.toJson(),
-    );
+    final infos = await query.getList(context, url);
 
     // 화면 갱신
     if (!mounted) return;
