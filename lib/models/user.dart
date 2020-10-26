@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
-import 'package:longlive/models/login.dart';
+import 'package:longlive/models/login/core.dart';
 import 'package:longlive/models/net.dart';
 
 class Gender extends DBTable {

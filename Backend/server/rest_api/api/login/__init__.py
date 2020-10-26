@@ -1,5 +1,3 @@
-import requests
-
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import BaseBackend
@@ -7,28 +5,10 @@ from django.core.exceptions import SuspiciousOperation
 
 from rest_framework import authentication, generics, permissions, response, serializers, views
 
-from .. import models
-from .user import UserSerializer
+from ... import models
+from ..user import UserSerializer
 
-
-class AbstractLogin:
-    @classmethod
-    def login(cls, access_token):
-        return None
-
-
-class KakaoTalkLogin(AbstractLogin):
-    @classmethod
-    def login(cls, access_token):
-        response = requests.get(
-            'https://kapi.kakao.com/v1/user/access_token_info',
-            headers={
-                'Authorization': f'Bearer {access_token}'
-            }
-        )
-        if response.status_code != 200:
-            return None
-        return response.json()['id']
+from .kakao import KakaoTalkLogin
 
 
 LOGIN_METHODS = {
@@ -164,6 +144,9 @@ class RegisterView(generics.CreateAPIView):
         ty = session.data['ty']
         token = session.data['token']
         remote_id = _remote_login(ty, token)
+
+        if remote_id is None:
+            raise SuspiciousOperation('Token was expired.')
 
         if models.UserSession.objects.filter(ty=ty, remote_id=remote_id).count() > 0:
             raise SuspiciousOperation('Already registered.')

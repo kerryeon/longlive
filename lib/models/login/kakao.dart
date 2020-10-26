@@ -1,54 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/all.dart' as Kakao;
-import 'package:longlive/models/habit.dart';
-import 'package:longlive/models/net.dart';
-import 'package:longlive/models/term.dart';
-import 'package:longlive/models/user.dart';
+import 'package:longlive/models/login/base.dart';
 import 'package:longlive/res/net.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 
-class UserLogin {
-  static final _loginType = 1;
+class KakaoUserLogin extends AbstractUserLogin {
+  const KakaoUserLogin();
 
-  const UserLogin();
+  int get loginType => 1;
 
   Future<void> initialize(BuildContext context) async {
-    await HabitType.initialize(context);
-    await Habit.initialize(context);
-    await Gender.initialize(context);
-    await Term.initialize(context);
+    await super.initialize(context);
 
     // KakaoTalk Native App Key 등록
     Kakao.KakaoContext.clientId = 'b5a5548ad6ff25d145583cc22d0e9846';
   }
 
-  Future<bool> tryLogin(BuildContext context) async {
-    final token = await tryGetToken(context);
-    if (token == null) return false;
-
-    var result = false;
-
-    final user = await Net.postOne(
-      context: context,
-      url: 'user/session/login',
-      queries: {'ty': _loginType, 'token': token},
-      generator: User.fromJson,
-      onInternalFailure: () async => result = true,
-    );
-    if (!result && user == null) return false;
-
-    if (user != null) {
-      user.initialize();
-    }
-    return true;
-  }
-
   Future<String> tryGetToken(BuildContext context) async {
-    // return 'YKHN5_CaxGQOoDYNSEJ4GvMM_S_swsjIikny4Qo9cpcAAAF1VgvcQg';
-
     try {
       final tokenStored = await Kakao.AccessTokenStore.instance.fromStore();
-      if (tokenStored.refreshToken != null) {
+      if (tokenStored.refreshToken != null ||
+          tokenStored.refreshTokenExpiresAt.isAfter(DateTime.now())) {
         return tokenStored.accessToken;
       }
 
@@ -77,12 +49,5 @@ class UserLogin {
       );
       return null;
     }
-  }
-
-  Future<Map<String, dynamic>> toJson(BuildContext context) async {
-    return {
-      'ty': _loginType,
-      'token': await tryGetToken(context) ?? 'undefined',
-    };
   }
 }

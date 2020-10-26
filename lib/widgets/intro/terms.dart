@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:longlive/models/login.dart';
+import 'package:longlive/models/login/core.dart';
 import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 import 'package:longlive/widgets/info/terms.dart';
