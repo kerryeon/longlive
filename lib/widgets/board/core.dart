@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
 import 'package:longlive/widgets/board/menu.dart';
@@ -76,13 +77,13 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
           IconButton(
             icon: Icon(Icons.search),
             tooltip: '검색',
-            onPressed: () {},
+            onPressed: _search,
           ),
         ],
       ),
       // 카테고리 목록
       drawer: CategoryWidget(
-        onTap: (ty) => reload(ty: ty),
+        onTap: (ty) => reload(title: '', tags: [], ty: ty),
       ),
       // 중앙에 배치
       body: buildBody(context),
@@ -90,4 +91,79 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
   }
 
   Widget buildBody(BuildContext context);
+
+  /// 주제어 및 태그를 검색합니다.
+  Future<void> _search() async {
+    final query = await showSearch(context: context, delegate: _Search());
+    if (query == null) {
+      return reload(title: '', tags: []);
+    }
+
+    final tags = extractHashTags(query);
+    if (tags.isNotEmpty) {
+      final tagsNoSharp = tags.map((e) => e.substring(1)).toList();
+      return reload(title: '', tags: tagsNoSharp);
+    } else {
+      return reload(title: query, tags: []);
+    }
+  }
+}
+
+/// 검색 기능 유틸리티
+class _Search extends SearchDelegate<String> {
+  static List<String> history = [];
+
+  String result = '';
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.close),
+        onPressed: () {
+          query = '';
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () => storeAndReturn(context, query),
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () => Navigator.pop(context),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return ListView(
+      children: _Search.history.reversed
+          .where((e) => e.contains(query))
+          .map((e) => buildEntity(context, e))
+          .toList(),
+    );
+  }
+
+  Widget buildEntity(BuildContext context, String title) {
+    return ListTile(
+      title: Center(child: Text(title)),
+      onTap: () => storeAndReturn(context, title),
+    );
+  }
+
+  void storeAndReturn(BuildContext context, String value) {
+    history.remove(value);
+    history.add(value);
+    Navigator.of(context).pop(value);
+  }
 }
