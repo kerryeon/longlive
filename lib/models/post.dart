@@ -73,11 +73,13 @@ class PostInfo extends DBTable {
 
 class PostQuery {
   String title;
+  Habit ty;
   List<String> tags;
   PostQueryOrder order;
 
   PostQuery({
     this.title,
+    this.ty,
     this.tags,
     this.order,
   });
@@ -86,6 +88,9 @@ class PostQuery {
     final Map<String, String> map = {};
     if (title != null && title.isNotEmpty) {
       map['title__contains'] = title;
+    }
+    if (ty != null) {
+      map['ty'] = ty.id.toString();
     }
     if (tags != null && tags.isNotEmpty) {
       map['tags'] = tags.join(',');

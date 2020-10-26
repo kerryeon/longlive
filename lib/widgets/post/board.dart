@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/habit.dart';
 import 'package:longlive/models/post.dart';
+import 'package:longlive/widgets/board/menu.dart';
 import 'package:longlive/widgets/post/like.dart';
 import 'package:longlive/widgets/post/post.dart';
 
@@ -59,16 +61,21 @@ class _State extends State {
 
   Future<void> _reload({
     String title,
+    Habit ty,
     List<String> tags,
     PostQueryOrder order,
   }) async {
     if (!mounted || _isLoading) return;
     _isLoading = true;
-    setState(() => _controller._category = '비만');
 
     // 쿼리 갱신
     if (title != null) {
       query.title = title;
+    }
+    if (ty != null) {
+      if (ty.id == 0) ty = null;
+      _controller.category = ty;
+      query.ty = ty;
     }
     if (tags != null) {
       query.tags = tags;
@@ -89,21 +96,21 @@ class _State extends State {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _reload());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _reload(
+        ty: _controller.category,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // 카테고리 버튼
-        leading: IconButton(
-          icon: Icon(Icons.list),
-          tooltip: '카테고리',
-          onPressed: () {},
-        ),
         // 카테고리
-        title: Text('비만'),
+        title: Text(
+          _controller.category != null ? _controller.category.name : '모두',
+        ),
         // 검색 버튼
         actions: [
           IconButton(
@@ -112,6 +119,10 @@ class _State extends State {
             onPressed: () {},
           ),
         ],
+      ),
+      // 카테고리 목록
+      drawer: CategoryWidget(
+        onTap: (ty) => _reload(ty: ty),
       ),
       // 중앙에 배치
       body: Center(
@@ -261,15 +272,11 @@ class PostBoardController {
   /// 정렬 기능
   final bool sort;
 
-  String _category;
+  Habit category;
 
   PostBoardController({
     this.date = false,
     this.sort = true,
-    String category,
-  }) {
-    this._category = category;
-  }
-
-  String get category => _category;
+    this.category,
+  });
 }

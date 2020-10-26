@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/content/base.dart';
 import 'package:longlive/widgets/post/board.dart';
 import 'package:longlive/widgets/post/create.dart';
@@ -23,6 +24,17 @@ class LeaderBoardWidget extends StatefulWidget implements ContentWidget {
 
 class _State extends State {
   final PostBoardController _controller = PostBoardController(date: true);
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 임의의 카테고리 지정
+    final user = User.getInstance();
+    if (user.habits.isNotEmpty) {
+      _controller.category = (user.habits.toList()..shuffle()).first;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

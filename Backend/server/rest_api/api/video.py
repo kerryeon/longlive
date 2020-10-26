@@ -18,6 +18,7 @@ class VideoFilter(filters.FilterSet):
         model = models.Video
         fields = {
             'title': ['contains'],
+            'ty': ['exact'],
             'date_create': ['gt', 'lt'],
         }
 

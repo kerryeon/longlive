@@ -91,8 +91,9 @@ class Net {
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
+    final uri = Uri.http(host, '$apiUrl/$url', queries).toString();
     return _request(
-      f: (dio, url, {data}) => dio.get(url),
+      f: (dio, _, {data}) => dio.get(uri),
       context: context,
       url: url,
       queries: queries,

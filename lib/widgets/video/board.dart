@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/habit.dart';
 import 'package:longlive/models/video.dart';
+import 'package:longlive/widgets/board/menu.dart';
 import 'package:longlive/widgets/video/post.dart';
 
 /// ## 추천영상 목록 위젯
@@ -19,8 +21,6 @@ class VideoBoardWidget extends StatefulWidget {
 }
 
 class _State extends State {
-  String category = '';
-
   List<VideoInfo> infos = [];
 
   // 쿼리
@@ -33,15 +33,19 @@ class _State extends State {
 
   Future<void> _reload({
     String title,
+    Habit ty,
     List<String> tags,
   }) async {
     if (!mounted || _isLoading) return;
     _isLoading = true;
-    setState(() => category = '비만');
 
     // 쿼리 갱신
     if (title != null) {
       query.title = title;
+    }
+    if (ty != null) {
+      if (ty.id == 0) ty = null;
+      query.ty = ty;
     }
     if (tags != null) {
       query.tags = tags;
@@ -66,14 +70,10 @@ class _State extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // 카테고리 버튼
-        leading: IconButton(
-          icon: Icon(Icons.list),
-          tooltip: '카테고리',
-          onPressed: () {},
-        ),
         // 카테고리
-        title: Text(category),
+        title: Text(
+          query.ty != null ? query.ty.name : '모두',
+        ),
         // 검색 버튼
         actions: [
           IconButton(
@@ -82,6 +82,10 @@ class _State extends State {
             onPressed: () {},
           ),
         ],
+      ),
+      // 카테고리 목록
+      drawer: CategoryWidget(
+        onTap: (ty) => _reload(ty: ty),
       ),
       // 중앙에 배치
       body: Center(

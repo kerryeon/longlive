@@ -56,10 +56,12 @@ class VideoInfo extends DBTable {
 
 class VideoQuery {
   String title;
+  Habit ty;
   List<String> tags;
 
   VideoQuery({
     this.title,
+    this.ty,
     this.tags,
   });
 
@@ -67,6 +69,9 @@ class VideoQuery {
     final Map<String, String> map = {};
     if (title != null && title.isNotEmpty) {
       map['title__contains'] = title;
+    }
+    if (ty != null) {
+      map['ty'] = ty.id.toString();
     }
     if (tags != null && tags.isNotEmpty) {
       map['tags'] = tags.join(',');

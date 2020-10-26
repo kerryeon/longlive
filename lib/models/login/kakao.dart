@@ -18,12 +18,6 @@ class KakaoUserLogin extends AbstractUserLogin {
 
   Future<String> tryGetToken(BuildContext context) async {
     try {
-      final tokenStored = await Kakao.AccessTokenStore.instance.fromStore();
-      if (tokenStored.refreshToken != null ||
-          tokenStored.refreshTokenExpiresAt.isAfter(DateTime.now())) {
-        return tokenStored.accessToken;
-      }
-
       final installed = await Kakao.isKakaoTalkInstalled();
       final authCode = installed
           ? await Kakao.AuthCodeClient.instance.requestWithTalk()

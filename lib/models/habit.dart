@@ -15,6 +15,30 @@ class HabitType extends DBTable {
   static Map<int, HabitType> _all = {};
   static Map<int, HabitType> get all => _all;
 
+  static final Map<int, IconData> _icons = {
+    0: Icons.all_inbox_rounded,
+    1: Icons.help_rounded,
+    2: Icons.whatshot_rounded,
+    3: Icons.emoji_people_rounded,
+    4: Icons.coronavirus_rounded,
+    5: Icons.self_improvement_rounded,
+    6: Icons.fastfood_rounded,
+  };
+
+  /// 대표 아이콘
+  IconData get icon {
+    if (_icons.containsKey(id)) {
+      return _icons[id];
+    }
+    return fallBackIcon;
+  }
+
+  /// "모두" 아이콘
+  static IconData get allIcon => _icons[0];
+
+  /// 예외 아이콘
+  static IconData get fallBackIcon => _icons[1];
+
   static Future<void> initialize(BuildContext context) async {
     _all = await Net().getDict(
       context: context,
@@ -63,6 +87,9 @@ class Habit extends DBTable {
 
   static Map<int, Habit> _all = {};
   static Map<int, Habit> get all => _all;
+
+  /// 대표 아이콘
+  IconData get icon => ty.icon;
 
   static Future<void> initialize(BuildContext context) async {
     _all = await Net().getDict(

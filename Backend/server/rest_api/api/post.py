@@ -57,6 +57,7 @@ class PostFilter(filters.FilterSet):
         model = models.Post
         fields = {
             'title': ['contains'],
+            'ty': ['exact'],
             'date_create': ['gt', 'lt'],
         }
 
