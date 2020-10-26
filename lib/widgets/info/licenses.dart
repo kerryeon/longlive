@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:longlive/models/license.dart';
+import 'package:longlive/models/net.dart';
 import 'package:longlive/widgets/info/base.dart';
 
 /// ## 오픈소스 라이센스 보기 기능
@@ -56,10 +56,11 @@ class _BoardWidget extends StatelessWidget {
     var desc = info.url;
 
     try {
-      final response = await http.get(info.url);
+      final dio = await Net().dio();
+      final response = await dio.get(info.url);
 
       if (response.statusCode == 200) {
-        desc = response.body;
+        desc = response.data;
       }
     } catch (_) {}
 

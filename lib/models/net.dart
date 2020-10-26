@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:longlive/models/base.dart';
 import 'package:longlive/res/net.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
+import 'package:path_provider/path_provider.dart';
 
 typedef T GeneratorFunction<T>(Map<String, dynamic> json);
 typedef Future<void> FallbackFunction();
@@ -13,7 +17,28 @@ class Net {
   static final String host = '203.255.3.210:40989';
   static final String apiUrl = '/api/v1';
 
-  static dynamic _get({
+  static final Net _instance = Net._internal();
+  factory Net() => _instance;
+  Net._internal();
+
+  Future<Dio> dio() async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final appDocPath = appDocDir.path;
+
+    final cookieJar = PersistCookieJar(dir: appDocPath + '/.cookies/');
+    final cookieManager = CookieManager(cookieJar);
+
+    final dio = Dio();
+    dio.interceptors.add(cookieManager);
+
+    dio.options.contentType = 'application/json';
+    dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
+    dio.options.headers[HttpHeaders.acceptCharsetHeader] = 'utf-8';
+    dio.options.responseType = ResponseType.bytes;
+    return dio;
+  }
+
+  dynamic _get({
     BuildContext context,
     String url,
     Map<String, String> queries,
@@ -23,13 +48,8 @@ class Net {
     final uri = Uri.http(host, '$apiUrl/$url', queries);
 
     try {
-      final response = await http.get(
-        uri,
-        headers: {
-          "Accept": "application/json",
-          "Accept-Charset": "utf-8",
-        },
-      );
+      final dio = await this.dio();
+      final response = await dio.get(uri.toString());
 
       // 내부 오류
       if (response.statusCode != 200) {
@@ -44,7 +64,7 @@ class Net {
         return null;
       }
 
-      return jsonDecode(utf8.decode(response.bodyBytes));
+      return jsonDecode(utf8.decode(response.data));
     } catch (_) {
       // 인터넷 연결 실패
       if (onConnectionFailure != null)
@@ -59,7 +79,7 @@ class Net {
     return null;
   }
 
-  static Future<Map<int, T>> getList<T extends DBTable>({
+  Future<Map<int, T>> getList<T extends DBTable>({
     BuildContext context,
     String url,
     Map<String, String> queries,
@@ -83,7 +103,7 @@ class Net {
     }
   }
 
-  static dynamic _post({
+  dynamic _post({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
@@ -93,14 +113,10 @@ class Net {
     final uri = Uri.http(host, '$apiUrl/$url');
 
     try {
-      final response = await http.post(
-        uri,
-        headers: {
-          "content-type": "application/json",
-          "Accept": "application/json",
-          "Accept-Charset": "utf-8",
-        },
-        body: json.encode(queries),
+      final dio = await this.dio();
+      final response = await dio.post(
+        uri.toString(),
+        data: json.encode(queries),
       );
 
       // 내부 오류
@@ -116,7 +132,7 @@ class Net {
         return null;
       }
 
-      return jsonDecode(utf8.decode(response.bodyBytes));
+      return jsonDecode(utf8.decode(response.data));
     } catch (e) {
       // 인터넷 연결 실패
       if (onConnectionFailure != null)
@@ -131,7 +147,7 @@ class Net {
     return null;
   }
 
-  static Future<T> postOne<T extends DBTable>({
+  Future<T> postOne<T extends DBTable>({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
@@ -154,7 +170,7 @@ class Net {
     }
   }
 
-  static Future<bool> createOne<T extends DBTable>({
+  Future<bool> createOne<T extends DBTable>({
     BuildContext context,
     String url,
     T object,
@@ -177,7 +193,7 @@ class Net {
     }
   }
 
-  static Future<bool> createOneWithQuery({
+  Future<bool> createOneWithQuery({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,

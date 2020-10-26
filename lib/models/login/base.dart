@@ -23,7 +23,7 @@ abstract class AbstractUserLogin {
 
     var result = false;
 
-    final user = await Net.postOne(
+    final user = await Net().postOne(
       context: context,
       url: 'user/session/login',
       queries: {'ty': loginType, 'token': token},

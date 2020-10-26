@@ -11,10 +11,20 @@ import 'package:longlive/widgets/main.dart';
 /// ### 기능
 /// - 잠시 후, 메인화면으로 이동
 /// - 첫 사용자는, 첫 사용자 화면으로 이동
-class InitWidget extends StatelessWidget {
+class InitWidget extends StatefulWidget {
+  @override
+  State createState() => _State();
+}
+
+class _State extends State {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _tryLogin());
+  }
+
   @override
   Widget build(BuildContext context) {
-    _tryLogin(context);
     return Scaffold(
       // 중앙에 배치
       body: Center(
@@ -26,7 +36,7 @@ class InitWidget extends StatelessWidget {
 
   /// 로그인을 시도합니다.
   /// 이후, 적절한 화면으로 이동합니다.
-  Future<void> _tryLogin(BuildContext context) async {
+  Future<void> _tryLogin() async {
     final userLogin = UserLogin();
 
     // 변수를 초기화합니다.
@@ -36,13 +46,13 @@ class InitWidget extends StatelessWidget {
     final result = await userLogin.tryLogin(context);
 
     // 로그인에 성공하면, 다음 화면으로 이동합니다.
-    if (result) _moveToNextWidget(context);
+    if (result) _moveToNextWidget();
   }
 
   /// 다음 화면으로 이동합니다.
   /// 이때, 첫 사용자는 첫 사용자 화면으로 이동합니다. [RegisterWidget]
   /// 기존 사용자는 메인 화면으로 이동합니다. [MainWidget]
-  void _moveToNextWidget(BuildContext context) {
+  void _moveToNextWidget() {
     final widget = User.getInstance() != null ? MainWidget() : RegisterWidget();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

@@ -15,6 +15,9 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='posts')
     ty = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    
+    # 태그 구분자(delimiter): '\n'
+    tags = models.TextField(default='')
 
     date_create = models.DateTimeField(auto_now_add=True)
     date_modify = models.DateTimeField(auto_now=True)

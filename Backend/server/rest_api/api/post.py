@@ -14,6 +14,8 @@ class PostSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
+    owner_id = serializers.IntegerField(source='user.id', read_only=True)
+
     images = PostImageSerializer(many=True, read_only=True)
     likes = serializers.IntegerField(source='likes.count', read_only=True)
 

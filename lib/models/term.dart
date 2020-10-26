@@ -18,7 +18,7 @@ class Term extends DBTable {
   static Term getInstance() => _instance;
 
   static Future<void> initialize(BuildContext context) async {
-    final terms = await Net.getList(
+    final terms = await Net().getList(
       context: context,
       url: "term",
       generator: fromJson,

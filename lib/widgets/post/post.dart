@@ -3,6 +3,7 @@ import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/post.dart';
 import 'package:longlive/widgets/image/carousel.dart';
 import 'package:longlive/widgets/post/board.dart';
+import 'package:longlive/widgets/post/like.dart';
 
 /// ## 게시글 위젯
 /// ### 생김새
@@ -81,14 +82,7 @@ class _State extends State {
                       tooltip: '신고하기',
                       onPressed: () {},
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: Colors.pink,
-                      ),
-                      tooltip: '찜하기',
-                      onPressed: () {},
-                    ),
+                    LikeButtonWidget(info),
                   ],
                 ),
               ],

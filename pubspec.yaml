@@ -32,9 +32,12 @@ dependencies:
   intl:
 
   # Good Utility
-  http:
+  cookie_jar: ^1.0.0
+  dio: ^3.0.10
+  dio_cookie_manager: ^1.0.0
   double_back_to_close_app: ^1.2.0
   hashtagable: ^1.0.4
+  path_provider:
   unicorndial: ^1.1.5
 
   # KakaoTalk

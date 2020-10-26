@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/net.dart';
 import 'package:longlive/models/post.dart';
+import 'package:longlive/widgets/post/like.dart';
 import 'package:longlive/widgets/post/post.dart';
 
 /// ## 게시글 목록 위젯
@@ -41,45 +43,30 @@ class _State extends State {
     this.dateFormat,
   );
 
-  List<PostInfo> infos = [
-    PostInfo(
-      title: '가을 다이어트 "이것"이 최고!',
-      desc: '''가을 다이어트에는 무엇이 좋을까?
-          
-안녕하세요, 호야TV입니다.
-이번에는 가을에 다이어트에는 무엇이 좋을지에 대해 알아봅시다~!
+  List<PostInfo> infos = [];
 
-바로, 야식 끊고 운동하는 방법이 전문가들이 추천하는 가장 좋은 가을 다이어트 방법이라고 합니다!
+  Future<void> _update() async {
+    if (!mounted) return;
+    setState(() => _controller._category = '비만');
 
-도움이 되셨다면 아래의 ❤️를 눌러주세요~!''',
-      ownerId: 123,
-      date: 123123123,
-      numLikes: 3026,
-      images: [
-        'http://image.fomos.kr/contents/images/board/2019/1103/1572743242649190.jpg',
-        'http://image.fomos.kr/contents/images/board/2019/1103/1572743242649190.jpg',
-        'http://image.fomos.kr/contents/images/board/2019/1103/1572743242649190.jpg',
-        'http://image.fomos.kr/contents/images/board/2019/1103/1572743242649190.jpg',
-      ],
-      tags: ['가을', '다이어트', '가을다이어트', '전문가추천', '썸네일낚시'],
-    ),
-    PostInfo(
-      title: '안되는 줄 알면서 왜 그랬을까',
-      desc: '^^',
-      ownerId: 124,
-      date: 123123124,
-      numLikes: 2931,
-      images: [
-        'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',
-      ],
-      tags: [],
-    ),
-  ];
+    final infos = await Net().getList(
+      context: context,
+      url: 'posts/all',
+      generator: PostInfo.fromJson,
+    );
+
+    if (!mounted) return;
+    setState(() => this.infos = infos.values.toList());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _update());
+  }
 
   @override
   Widget build(BuildContext context) {
-    _controller._category = '비만';
-
     return Scaffold(
       appBar: AppBar(
         // 카테고리 버튼
@@ -187,20 +174,7 @@ class PostBoardContentsWidget extends StatelessWidget {
                       ),
                     ),
                     // 찜 버튼
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.favorite),
-                            tooltip: '찜하기',
-                            onPressed: () {},
-                          ),
-                          Text(e.numLikesFormat),
-                        ],
-                      ),
-                    ),
+                    LikeButtonWidget(e),
                   ],
                 ),
               ),
@@ -219,7 +193,6 @@ class PostBoardContentsWidget extends StatelessWidget {
         title: '안되는 줄 알면서 왜 그랬을까',
         desc: '^^',
         ownerId: 124,
-        date: 123123124,
         numLikes: 2931,
         images: [
           'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',
@@ -230,7 +203,6 @@ class PostBoardContentsWidget extends StatelessWidget {
         title: '안되는 줄 알면서 왜 그랬을까',
         desc: '^^',
         ownerId: 124,
-        date: 123123124,
         numLikes: 2931,
         images: [
           'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',
@@ -241,7 +213,6 @@ class PostBoardContentsWidget extends StatelessWidget {
         title: '안되는 줄 알면서 왜 그랬을까',
         desc: '^^',
         ownerId: 124,
-        date: 123123124,
         numLikes: 2931,
         images: [
           'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',

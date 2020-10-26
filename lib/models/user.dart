@@ -16,7 +16,7 @@ class Gender extends DBTable {
   static Map<int, Gender> get all => _all;
 
   static Future<void> initialize(BuildContext context) async {
-    _all = await Net.getList(
+    _all = await Net().getList(
       context: context,
       url: "user/genders",
       generator: fromJson,
@@ -68,7 +68,7 @@ class User extends DBTable {
     final user = toJson();
     final habits = user.remove('habits');
 
-    return Net.createOneWithQuery(
+    return Net().createOneWithQuery(
       context: context,
       url: 'user/session/register',
       queries: {
