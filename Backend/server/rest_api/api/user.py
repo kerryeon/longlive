@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, serializers, viewsets
 
 from .. import models
-from .habit import UserHabitSerializer
+from .csrf import CsrfExemptSessionAuthentication
 
 
 class UserGenderTypeSerializer(serializers.ModelSerializer):
@@ -18,8 +18,6 @@ class UserGenderTypeViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    habits = UserHabitSerializer(many=True, required=False, default=[])
-
     class Meta:
         model = models.User
         fields = ('id', 'age', 'gender', 'term', 'habits',)
@@ -36,6 +34,21 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
+
+    serializer_class = UserSerializer
+    lookup_field = 'pk'
+
+    def get_object(self, *args, **kwargs):
+        return self.request.user
+
+    @classmethod
+    def get_extra_actions(cls):
+        return []
+
+
+class UserMutView(generics.UpdateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
 
     serializer_class = UserSerializer
     lookup_field = 'pk'

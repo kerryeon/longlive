@@ -3,9 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import SuspiciousOperation
 
-from rest_framework import authentication, generics, permissions, response, serializers, views
+from rest_framework import generics, permissions, response, serializers, views
 
 from ... import models
+from ..csrf import CsrfExemptSessionAuthentication
 from ..user import UserSerializer
 
 from .kakao import KakaoTalkLogin
@@ -88,14 +89,8 @@ class LoginSerializer(LoginSessionSerializer):
         return {'user': user}
 
 
-class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
-    def enforce_csrf(self, request):
-        return
-
-
 class LoginView(views.APIView):
     permission_classes = (permissions.AllowAny,)
-
     authentication_classes = (CsrfExemptSessionAuthentication,)
 
     def post(self, request):

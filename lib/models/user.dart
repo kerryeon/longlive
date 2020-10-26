@@ -76,6 +76,16 @@ class User extends DBTable {
         .toList();
   }
 
+  Future<bool> updateHabits(BuildContext context) async {
+    return Net().update(
+      context: context,
+      url: 'user/info/mut',
+      queries: {
+        'habits': habits.map((e) => e.id).toList(),
+      },
+    );
+  }
+
   Future<bool> register(BuildContext context) async {
     final user = toJson();
     final habits = user.remove('habits');
@@ -98,7 +108,7 @@ class User extends DBTable {
       gender: Gender.all[json['gender']],
       term: json['term'],
       habits: List<Habit>.from(
-        json['habits'].map((e) => e['ty']).map((e) => Habit.all[e]),
+        json['habits'].map((e) => Habit.all[e]),
       ),
     );
   }

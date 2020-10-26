@@ -11,6 +11,7 @@ import 'package:longlive/widgets/dialog/simple.dart';
 import 'package:path_provider/path_provider.dart';
 
 typedef T GeneratorFunction<T>(Map<String, dynamic> json);
+typedef Future<Response> RequestFunction(Dio dio, String url, {String data});
 typedef Future<void> FallbackFunction();
 
 class Net {
@@ -38,21 +39,25 @@ class Net {
     return dio;
   }
 
-  dynamic _get({
+  dynamic _request({
     BuildContext context,
     String url,
-    Map<String, String> queries,
+    Map<String, dynamic> queries,
+    RequestFunction f,
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
-    final uri = Uri.http(host, '$apiUrl/$url', queries);
+    final uri = Uri.http(host, '$apiUrl/$url');
 
     try {
-      final dio = await this.dio();
-      final response = await dio.get(uri.toString());
+      final response = await f(
+        await this.dio(),
+        uri.toString(),
+        data: json.encode(queries),
+      );
 
       // 내부 오류
-      if (response.statusCode != 200) {
+      if (![200, 201].contains(response.statusCode)) {
         if (onInternalFailure != null)
           await onInternalFailure();
         else
@@ -77,6 +82,23 @@ class Net {
         );
     }
     return null;
+  }
+
+  dynamic _get({
+    BuildContext context,
+    String url,
+    Map<String, String> queries,
+    FallbackFunction onConnectionFailure,
+    FallbackFunction onInternalFailure,
+  }) async {
+    return _request(
+      f: (dio, url, {data}) => dio.get(url),
+      context: context,
+      url: url,
+      queries: queries,
+      onConnectionFailure: onConnectionFailure,
+      onInternalFailure: onInternalFailure,
+    );
   }
 
   Future<List<T>> getList<T extends DBTable>({
@@ -133,41 +155,14 @@ class Net {
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
-    final uri = Uri.http(host, '$apiUrl/$url');
-
-    try {
-      final dio = await this.dio();
-      final response = await dio.post(
-        uri.toString(),
-        data: json.encode(queries),
-      );
-
-      // 내부 오류
-      if (![200, 201].contains(response.statusCode)) {
-        if (onInternalFailure != null)
-          await onInternalFailure();
-        else
-          await showMessageDialog(
-            context: context,
-            content: NetMessage.internalFailure,
-            onConfirm: exitApp,
-          );
-        return null;
-      }
-
-      return jsonDecode(utf8.decode(response.data));
-    } catch (e) {
-      // 인터넷 연결 실패
-      if (onConnectionFailure != null)
-        await onConnectionFailure();
-      else
-        await showMessageDialog(
-          context: context,
-          content: NetMessage.connectionFailure,
-          onConfirm: exitApp,
-        );
-    }
-    return null;
+    return _request(
+      f: (dio, url, {data}) => dio.post(url, data: data),
+      context: context,
+      url: url,
+      queries: queries,
+      onConnectionFailure: onConnectionFailure,
+      onInternalFailure: onInternalFailure,
+    );
   }
 
   Future<T> postOne<T extends DBTable>({
@@ -198,10 +193,22 @@ class Net {
     String url,
     T object,
   }) async {
-    final Map<String, dynamic> data = await _post(
+    return createOneWithQuery(
       context: context,
       url: url,
       queries: object.toJson(),
+    );
+  }
+
+  Future<bool> createOneWithQuery({
+    BuildContext context,
+    String url,
+    Map<String, dynamic> queries,
+  }) async {
+    final Map<String, dynamic> data = await _post(
+      context: context,
+      url: url,
+      queries: queries,
       onConnectionFailure: () async => showMessageDialog(
         context: context,
         content: NetMessage.connectionFailure,
@@ -216,12 +223,29 @@ class Net {
     }
   }
 
-  Future<bool> createOneWithQuery({
+  dynamic _update({
+    BuildContext context,
+    String url,
+    Map<String, dynamic> queries,
+    FallbackFunction onConnectionFailure,
+    FallbackFunction onInternalFailure,
+  }) async {
+    return _request(
+      f: (dio, url, {data}) => dio.patch(url, data: data),
+      context: context,
+      url: url,
+      queries: queries,
+      onConnectionFailure: onConnectionFailure,
+      onInternalFailure: onInternalFailure,
+    );
+  }
+
+  Future<bool> update({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
   }) async {
-    final Map<String, dynamic> data = await _post(
+    final Map<String, dynamic> data = await _update(
       context: context,
       url: url,
       queries: queries,

@@ -72,6 +72,8 @@ class _Widget extends StatefulWidget {
 class _State extends State {
   final List<HabitToggle> habits = User.getInstance().enabledHabits();
 
+  bool isProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +91,33 @@ class _State extends State {
 
   /// 선택한 습관 정보를 갱신합니다.
   Future<void> _changeHabit(HabitToggle habit) async {
+    // 이미 갱신중이면, 버튼 입력을 무시합니다.
+    if (isProgress) return;
+    isProgress = true;
+
+    // 습관 정보를 도치합니다.
     habit.enabled = !habit.enabled;
-    setState(() {});
+    final habits =
+        this.habits.where((e) => e.enabled).map((e) => e.habit).toList();
+
+    // 유저 정보에 반영합니다.
+    final user = User.getInstance();
+    final habitsOld = user.habits;
+    user.habits = habits;
+
+    // 서버에 갱신을 요청합니다.
+    final result = await user.updateHabits(context);
+
+    if (result) {
+      // 갱신에 성공한 경우, UI를 갱신합니다.
+      if (mounted) setState(() {});
+    } else {
+      // 갱신에 실패한 경우, 결과를 이전으로 되돌립니다.
+      habit.enabled = !habit.enabled;
+      user.habits = habitsOld;
+    }
+
+    // 버튼 입력을 활성화합니다.
+    isProgress = false;
   }
 }

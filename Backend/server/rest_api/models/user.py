@@ -1,6 +1,7 @@
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 
+from .habit import Habit
 from .term import Term
 
 
@@ -31,8 +32,9 @@ class UserManager(BaseUserManager):
             is_staff=is_staff or is_superuser,
             is_superuser=is_superuser,
         )
-        if password is not None:
-            user.set_password(password)
+        if password is None:
+            password = '12341234'
+        user.set_password(password) 
         user.save(using=self._db)
         return user
 
@@ -50,6 +52,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     """사용자 정보"""
     age = models.IntegerField()
     gender = models.ForeignKey(UserGenderType, on_delete=models.CASCADE)
+    
+    habits = models.ManyToManyField(Habit, blank=True)
 
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
 
