@@ -79,7 +79,30 @@ class Net {
     return null;
   }
 
-  Future<Map<int, T>> getList<T extends DBTable>({
+  Future<List<T>> getList<T extends DBTable>({
+    BuildContext context,
+    String url,
+    Map<String, String> queries,
+    GeneratorFunction<T> generator,
+    FallbackFunction onConnectionFailure,
+    FallbackFunction onInternalFailure,
+  }) async {
+    final List<dynamic> data = await _get(
+      context: context,
+      url: url,
+      queries: queries,
+      onConnectionFailure: onConnectionFailure,
+      onInternalFailure: onInternalFailure,
+    );
+
+    if (data != null) {
+      return data.map((e) => generator(e)).toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<int, T>> getDict<T extends DBTable>({
     BuildContext context,
     String url,
     Map<String, String> queries,

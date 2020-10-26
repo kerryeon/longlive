@@ -16,7 +16,7 @@ class HabitType extends DBTable {
   static Map<int, HabitType> get all => _all;
 
   static Future<void> initialize(BuildContext context) async {
-    _all = await Net().getList(
+    _all = await Net().getDict(
       context: context,
       url: "habits/types",
       generator: fromJson,
@@ -65,7 +65,7 @@ class Habit extends DBTable {
   static Map<int, Habit> get all => _all;
 
   static Future<void> initialize(BuildContext context) async {
-    _all = await Net().getList(
+    _all = await Net().getDict(
       context: context,
       url: "habits/all",
       generator: fromJson,

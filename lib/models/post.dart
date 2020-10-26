@@ -51,16 +51,13 @@ class PostInfo extends DBTable {
       id: map['id'],
       title: map['title'],
       desc: map['desc'],
-      ownerId: map['owner_id'],
+      ownerId: map['user'],
       ty: Habit.all[map['ty']],
       dateCreate: DateTime.parse(map['date_create']),
       dateModify: DateTime.parse(map['date_modify']),
       numLikes: map['likes'],
       images: List<String>.from(map['images'].map((e) => e['image']).toList()),
-      tags: map['tags']
-          .split(_tagDelim)
-          .where((e) => e.isNotEmpty as bool)
-          .toList(),
+      tags: List<String>.from(map['tags']),
     );
   }
 
@@ -72,5 +69,58 @@ class PostInfo extends DBTable {
       'tags': tags.join(_tagDelim),
       'images': images,
     };
+  }
+}
+
+class PostQuery {
+  String title;
+  List<String> tags;
+  PostQueryOrder order;
+
+  PostQuery({
+    this.title,
+    this.tags,
+    this.order,
+  });
+
+  Map<String, String> toJson() {
+    final Map<String, String> map = {};
+    if (title != null && title.isNotEmpty) {
+      map['title__contains'] = title;
+    }
+    if (tags != null && tags.isNotEmpty) {
+      map['tags'] = tags.join(',');
+    }
+    if (order != null) {
+      map['order'] = order.toJson();
+    }
+
+    final now = DateTime.now();
+    final year = now.year;
+    final month = now.month;
+
+    // 현재 년/월을 기준으로 로드
+    final dateBegin = DateTime.utc(year, month);
+    final dateEnd = DateTime.utc(year, month + 1);
+    map['date_create__gt'] = dateBegin.toIso8601String();
+    map['date_create__lt'] = dateEnd.toIso8601String();
+    return map;
+  }
+}
+
+enum PostQueryOrder {
+  Popular,
+  Latest,
+}
+
+extension PostQueryOrderExtension on PostQueryOrder {
+  String toJson() {
+    switch (this) {
+      case PostQueryOrder.Popular:
+        return '-likes';
+      case PostQueryOrder.Latest:
+      default:
+        return '-date';
+    }
   }
 }

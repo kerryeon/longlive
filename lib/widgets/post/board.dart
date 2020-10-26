@@ -45,24 +45,53 @@ class _State extends State {
 
   List<PostInfo> infos = [];
 
-  Future<void> _update() async {
-    if (!mounted) return;
+  // 쿼리
+  PostQuery query = PostQuery(
+    tags: [],
+    order: PostQueryOrder.Popular,
+  );
+
+  // 쿼리 갱신중
+  bool _isLoading = false;
+
+  Future<void> _reload({
+    String title,
+    List<String> tags,
+    PostQueryOrder order,
+  }) async {
+    if (!mounted || _isLoading) return;
+    _isLoading = true;
     setState(() => _controller._category = '비만');
 
+    // 쿼리 갱신
+    if (title != null) {
+      query.title = title;
+    }
+    if (tags != null) {
+      query.tags = tags;
+    }
+    if (order != null) {
+      query.order = order;
+    }
+
+    // 쿼리 요청
     final infos = await Net().getList(
       context: context,
       url: 'posts/all',
       generator: PostInfo.fromJson,
+      queries: query.toJson(),
     );
 
+    // 화면 갱신
     if (!mounted) return;
-    setState(() => this.infos = infos.values.toList());
+    _isLoading = false;
+    setState(() => this.infos = infos);
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _update());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _reload());
   }
 
   @override
@@ -114,11 +143,11 @@ class _State extends State {
                     children: [
                       FlatButton(
                         child: const Text('인기순'),
-                        onPressed: () {},
+                        onPressed: () => _reload(order: PostQueryOrder.Popular),
                       ),
                       FlatButton(
                         child: const Text('최신순'),
-                        onPressed: () {},
+                        onPressed: () => _reload(order: PostQueryOrder.Latest),
                       ),
                     ],
                   ),

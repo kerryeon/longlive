@@ -23,7 +23,7 @@ class Term extends DBTable {
       url: "term",
       generator: fromJson,
     );
-    _instance = terms.values.last;
+    _instance = terms.last;
   }
 
   static Term fromJson(Map<String, dynamic> json) {

@@ -3,6 +3,7 @@ import pathlib
 import uuid
 
 from django.db import models
+from taggit.managers import TaggableManager
 
 from .habit import Habit
 from .user import User
@@ -15,9 +16,8 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='posts')
     ty = models.ForeignKey(Habit, on_delete=models.CASCADE)
-    
-    # 태그 구분자(delimiter): '\n'
-    tags = models.TextField(default='')
+
+    tags = TaggableManager()
 
     date_create = models.DateTimeField(auto_now_add=True)
     date_modify = models.DateTimeField(auto_now=True)

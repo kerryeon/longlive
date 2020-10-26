@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Color fields
     'colorfield',
 
@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_api',
+    'django_filters',
+    
+    # Tagging
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -127,6 +131,12 @@ USE_TZ = True
 # Customized User
 AUTH_USER_MODEL = 'rest_api.User'
 AUTHENTICATION_BACKENDS = ('rest_api.api.login.LoginBackend',)
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
 
 
 # Static files (CSS, JavaScript, Images)

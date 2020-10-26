@@ -16,7 +16,7 @@ class Gender extends DBTable {
   static Map<int, Gender> get all => _all;
 
   static Future<void> initialize(BuildContext context) async {
-    _all = await Net().getList(
+    _all = await Net().getDict(
       context: context,
       url: "user/genders",
       generator: fromJson,

@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/post.dart';
 
-class LikeButtonWidget extends StatefulWidget {
+class LikeButtonWidget extends StatelessWidget {
   final PostInfo _info;
 
   const LikeButtonWidget(this._info);
-
-  @override
-  State createState() => _State(_info);
-}
-
-class _State extends State {
-  final PostInfo _info;
-
-  _State(this._info);
 
   @override
   Widget build(BuildContext context) {
