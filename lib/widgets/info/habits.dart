@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/habit.dart';
+import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/info/base.dart';
 
 /// ## 증상/습관 정보 변경 기능
@@ -69,7 +70,7 @@ class _Widget extends StatefulWidget {
 }
 
 class _State extends State {
-  final List<HabitToggle> habits = HabitToggle.all();
+  final List<HabitToggle> habits = User.getInstance().enabledHabits();
 
   @override
   Widget build(BuildContext context) {

@@ -28,7 +28,10 @@ class _State extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       // 중앙에 배치
-      body: PostBoardWidget(_controller),
+      body: PostBoardWidget(
+        _controller,
+        'posts/all',
+      ),
       // 등록 버튼
       floatingActionButton: UnicornDialer(
         parentButton: Icon(Icons.post_add),

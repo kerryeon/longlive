@@ -21,7 +21,9 @@ import 'package:longlive/widgets/post/post.dart';
 class PostBoardWidget extends StatefulWidget {
   final PostBoardController _controller;
 
-  const PostBoardWidget(this._controller);
+  final String url;
+
+  const PostBoardWidget(this._controller, this.url);
 
   /// 오늘의 년/월 문자열
   String get dateFormat {
@@ -30,16 +32,18 @@ class PostBoardWidget extends StatefulWidget {
   }
 
   @override
-  State createState() => _State(_controller, dateFormat);
+  State createState() => _State(_controller, url, dateFormat);
 }
 
 class _State extends State {
   final PostBoardController _controller;
 
+  final String url;
   final String dateFormat;
 
   _State(
     this._controller,
+    this.url,
     this.dateFormat,
   );
 
@@ -77,7 +81,7 @@ class _State extends State {
     // 쿼리 요청
     final infos = await Net().getList(
       context: context,
-      url: 'posts/all',
+      url: url,
       generator: PostInfo.fromJson,
       queries: query.toJson(),
     );

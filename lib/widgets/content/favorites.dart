@@ -20,6 +20,9 @@ class FavoritesWidget extends StatefulWidget implements ContentWidget {
 class _State extends State {
   @override
   Widget build(BuildContext context) {
-    return PostBoardWidget(PostBoardController());
+    return PostBoardWidget(
+      PostBoardController(),
+      'user/posts/liked/all',
+    );
   }
 }

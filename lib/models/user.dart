@@ -64,6 +64,18 @@ class User extends DBTable {
 
   void initialize() => _instance = this;
 
+  List<HabitToggle> enabledHabits() {
+    final habits = this.habits.map((e) => e.id);
+    return Habit.all.values
+        .map(
+          (habit) => HabitToggle(
+            habit: habit,
+            enabled: habits.contains(habit.id),
+          ),
+        )
+        .toList();
+  }
+
   Future<bool> register(BuildContext context) async {
     final user = toJson();
     final habits = user.remove('habits');
@@ -85,6 +97,9 @@ class User extends DBTable {
       age: json['age'],
       gender: Gender.all[json['gender']],
       term: json['term'],
+      habits: List<Habit>.from(
+        json['habits'].map((e) => e['ty']).map((e) => Habit.all[e]),
+      ),
     );
   }
 

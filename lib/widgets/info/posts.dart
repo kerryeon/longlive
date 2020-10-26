@@ -11,6 +11,7 @@ class MyPostsInfo implements UserInfo {
       MaterialPageRoute(
         builder: (BuildContext context) => PostBoardWidget(
           PostBoardController(),
+          'user/posts/all',
         ),
       ),
     );
