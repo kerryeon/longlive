@@ -1,31 +1,25 @@
-import 'package:flutter/material.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
-import 'package:longlive/models/net.dart';
 
-class VideoInfo extends DBTable {
-  final String title;
+class VideoInfo extends BoardEntity {
   final String desc;
   final String ownerId;
   final String ownerName;
-  final Habit ty;
 
   final String videoId;
   final bool ad;
 
-  final List<String> tags;
-
   const VideoInfo({
     int id,
-    this.title,
+    String title,
+    Habit ty,
+    List<String> tags,
     this.desc,
     this.ownerId,
     this.ownerName,
-    this.ty,
     this.videoId,
     this.ad,
-    this.tags,
-  }) : super(id);
+  }) : super(id, title, ty, tags);
 
   String get thumb => 'https://img.youtube.com/vi/$videoId/default.jpg';
   String get url => 'https://www.youtube.com/watch?v=$videoId';
@@ -54,38 +48,8 @@ class VideoInfo extends DBTable {
   }
 }
 
-class VideoQuery {
-  String title;
-  Habit ty;
-  List<String> tags;
+class VideoQuery extends DBQuery<VideoInfo> {
+  VideoQuery() : super(tags: []);
 
-  VideoQuery({
-    this.title,
-    this.ty,
-    this.tags,
-  });
-
-  Map<String, String> toJson() {
-    final Map<String, String> map = {};
-    if (title != null && title.isNotEmpty) {
-      map['title__contains'] = title;
-    }
-    if (ty != null) {
-      map['ty'] = ty.id.toString();
-    }
-    if (tags != null && tags.isNotEmpty) {
-      map['tags'] = tags.join(',');
-    }
-
-    return map;
-  }
-
-  Future<List<VideoInfo>> getList(BuildContext context) async {
-    return Net().getList(
-      context: context,
-      url: 'videos',
-      generator: VideoInfo.fromJson,
-      queries: toJson(),
-    );
-  }
+  VideoInfo Function(Map<String, dynamic>) get generator => VideoInfo.fromJson;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/habit.dart';
 import 'package:longlive/models/post.dart';
-import 'package:longlive/widgets/board/menu.dart';
+import 'package:longlive/widgets/board/core.dart';
 import 'package:longlive/widgets/post/like.dart';
 import 'package:longlive/widgets/post/post.dart';
 
@@ -36,7 +36,7 @@ class PostBoardWidget extends StatefulWidget {
   State createState() => _State(_controller, url, dateFormat);
 }
 
-class _State extends State {
+class _State extends BoardState<PostInfo, PostQuery> {
   final PostBoardController _controller;
 
   final String url;
@@ -46,127 +46,71 @@ class _State extends State {
     this._controller,
     this.url,
     this.dateFormat,
-  );
+  ) : super(
+          url: url,
+          query: PostQuery(_controller.category),
+        );
 
-  List<PostInfo> infos = [];
-
-  // 쿼리
-  PostQuery query = PostQuery(
-    tags: [],
-    order: PostQueryOrder.Popular,
-  );
-
-  // 쿼리 갱신중
-  bool _isLoading = false;
-
-  Future<void> _reload({
+  Future<void> reload({
     String title,
     Habit ty,
     List<String> tags,
     PostQueryOrder order,
   }) async {
-    if (!mounted || _isLoading) return;
-    _isLoading = true;
+    _controller.category = ty;
+    if (_controller.category != null && _controller.category.id == 0)
+      _controller.category = null;
 
-    // 쿼리 갱신
-    if (title != null) {
-      query.title = title;
-    }
-    if (ty != null) {
-      if (ty.id == 0) ty = null;
-      _controller.category = ty;
-      query.ty = ty;
-    }
-    if (tags != null) {
-      query.tags = tags;
-    }
     if (order != null) {
       query.order = order;
     }
 
-    // 쿼리 요청
-    final infos = await query.getList(context, url);
-
-    // 화면 갱신
-    if (!mounted) return;
-    _isLoading = false;
-    setState(() => this.infos = infos);
+    return super.reload(title: title, ty: ty, tags: tags);
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _reload(
-        ty: _controller.category,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // 카테고리
-        title: Text(
-          _controller.category != null ? _controller.category.name : '모두',
-        ),
-        // 검색 버튼
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            tooltip: '검색',
-            onPressed: () {},
-          ),
-        ],
-      ),
-      // 카테고리 목록
-      drawer: CategoryWidget(
-        onTap: (ty) => _reload(ty: ty),
-      ),
-      // 중앙에 배치
-      body: Center(
-        child: ListView(
-          children: [
-            Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                // 날짜
-                Visibility(
-                  visible: _controller.date,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 0, 12),
-                    child: Text(
-                      dateFormat,
-                      style: Theme.of(context).textTheme.subtitle1,
+  Widget buildBody(BuildContext context) {
+    return Center(
+      child: ListView(
+        children: [
+          Stack(
+            alignment: Alignment.centerLeft,
+            children: [
+              // 날짜
+              Visibility(
+                visible: _controller.date,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 0, 12),
+                  child: Text(
+                    dateFormat,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+              ),
+              // 정렬
+              Visibility(
+                visible: _controller.sort,
+                child: ButtonBar(
+                  alignment: _controller.date
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.center,
+                  children: [
+                    FlatButton(
+                      child: const Text('인기순'),
+                      onPressed: () => reload(order: PostQueryOrder.Popular),
                     ),
-                  ),
+                    FlatButton(
+                      child: const Text('최신순'),
+                      onPressed: () => reload(order: PostQueryOrder.Latest),
+                    ),
+                  ],
                 ),
-                // 정렬
-                Visibility(
-                  visible: _controller.sort,
-                  child: ButtonBar(
-                    alignment: _controller.date
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.center,
-                    children: [
-                      FlatButton(
-                        child: const Text('인기순'),
-                        onPressed: () => _reload(order: PostQueryOrder.Popular),
-                      ),
-                      FlatButton(
-                        child: const Text('최신순'),
-                        onPressed: () => _reload(order: PostQueryOrder.Latest),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            // 게시글 목록
-            PostBoardContentsWidget(infos),
-          ],
-        ),
+              ),
+            ],
+          ),
+          // 게시글 목록
+          PostBoardContentsWidget(infos),
+        ],
       ),
     );
   }

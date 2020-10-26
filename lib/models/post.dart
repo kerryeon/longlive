@@ -1,16 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
-import 'package:longlive/models/net.dart';
 
-class PostInfo extends DBTable {
-  final String title;
+class PostInfo extends BoardEntity {
   final String desc;
   final int ownerId;
-  final Habit ty;
-
-  final List<String> tags;
 
   /// UTC 시간
   final DateTime dateCreate;
@@ -24,17 +18,17 @@ class PostInfo extends DBTable {
 
   PostInfo({
     int id,
-    this.title,
+    String title,
+    Habit ty,
+    List<String> tags,
     this.desc,
     this.ownerId,
-    this.ty,
-    this.tags,
     this.dateCreate,
     this.dateModify,
     this.numLikes,
     this.images,
     this.isLiked = false,
-  }) : super(id);
+  }) : super(id, title, ty, tags);
 
   String get thumb => images.isNotEmpty
       ? images[0]
@@ -71,30 +65,13 @@ class PostInfo extends DBTable {
   }
 }
 
-class PostQuery {
-  String title;
-  Habit ty;
-  List<String> tags;
+class PostQuery extends DBQuery<PostInfo> {
   PostQueryOrder order;
 
-  PostQuery({
-    this.title,
-    this.ty,
-    this.tags,
-    this.order,
-  });
+  PostQuery(Habit ty, [this.order]) : super(ty: ty, tags: []);
 
   Map<String, String> toJson() {
-    final Map<String, String> map = {};
-    if (title != null && title.isNotEmpty) {
-      map['title__contains'] = title;
-    }
-    if (ty != null) {
-      map['ty'] = ty.id.toString();
-    }
-    if (tags != null && tags.isNotEmpty) {
-      map['tags'] = tags.join(',');
-    }
+    final map = super.toJson();
     if (order != null) {
       map['order'] = order.toJson();
     }
@@ -111,14 +88,7 @@ class PostQuery {
     return map;
   }
 
-  Future<List<PostInfo>> getList(BuildContext context, String url) async {
-    return Net().getList(
-      context: context,
-      url: url,
-      generator: PostInfo.fromJson,
-      queries: toJson(),
-    );
-  }
+  PostInfo Function(Map<String, dynamic>) get generator => PostInfo.fromJson;
 }
 
 enum PostQueryOrder {
