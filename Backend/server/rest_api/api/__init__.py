@@ -20,6 +20,7 @@ router.register(r'user/genders', user.UserGenderTypeViewSet)
 router.register(r'user/posts/all', post.UserPostViewSet)
 router.register(r'user/posts/liked/all', post.UserPostLikedViewSet)
 router.register(r'user/posts/liked/mut', post.UserPostLikedMutViewSet)
+router.register(r'user/posts/report', post.UserPostReportViewSet)
 router.register(r'videos', video.VideoViewSet)
 
 

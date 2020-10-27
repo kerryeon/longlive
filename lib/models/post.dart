@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
 import 'package:longlive/models/net.dart';
+import 'package:longlive/widgets/dialog/simple.dart';
 
 class PostInfo extends BoardEntity {
   final String desc;
@@ -52,6 +53,37 @@ class PostInfo extends BoardEntity {
         'enabled': isLiked,
       },
     );
+  }
+
+  Future<bool> report(BuildContext context, String desc) async {
+    var result = false;
+
+    final netResult = await Net().createOneWithQuery(
+      context: context,
+      url: 'user/posts/report',
+      queries: {
+        'post': id,
+        'desc': desc,
+      },
+      // 중복 신고됨
+      onInternalFailure: () async {
+        result = true;
+        await showMessageDialog(
+          context: context,
+          content: '이미 신고한 게시글입니다.',
+        );
+      },
+    );
+
+    // 신고 성공
+    if (netResult) {
+      result = true;
+      await showMessageDialog(
+        context: context,
+        content: '신고해주셔서 감사합니다.',
+      );
+    }
+    return result;
   }
 
   static PostInfo fromJson(Map<String, dynamic> map) {

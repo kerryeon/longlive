@@ -152,3 +152,25 @@ class UserPostLikedMutViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
             instance.delete()
         finally:
             return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+
+class PostReportSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = models.PostReport
+        fields = ('user', 'post', 'desc')
+
+
+class UserPostReportViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
+
+    queryset = models.PostReport.objects.all()
+    serializer_class = PostReportSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.PostReport.objects.filter(user=user)

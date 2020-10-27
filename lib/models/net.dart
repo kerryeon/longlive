@@ -37,6 +37,7 @@ class Net {
     dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
     dio.options.headers[HttpHeaders.acceptCharsetHeader] = 'utf-8';
     dio.options.responseType = ResponseType.bytes;
+    dio.options.validateStatus = (status) => status < 500;
     return dio;
   }
 
@@ -209,6 +210,7 @@ class Net {
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
+    FallbackFunction onInternalFailure,
   }) async {
     final Map<String, dynamic> data = await _post(
       context: context,
@@ -218,7 +220,7 @@ class Net {
         context: context,
         content: NetMessage.connectionFailure,
       ),
-      onInternalFailure: () async => {},
+      onInternalFailure: onInternalFailure ?? () async => {},
     );
 
     if (data != null) {

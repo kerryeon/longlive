@@ -69,3 +69,21 @@ class PostLiked(models.Model):
 
     def __str__(self) -> str:
         return f'[{self.user.id}] {self.post}'
+
+
+class PostReport(models.Model):
+    """신고한 게시글"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='reports')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE,
+                             related_name='reports')
+    
+    desc = models.TextField()
+
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post',)
+
+    def __str__(self) -> str:
+        return f'[{self.user.id}] {self.post}'
