@@ -48,7 +48,7 @@ abstract class DBQuery<T extends BoardEntity> {
   List<String> tags;
 
   DBQuery({
-    this.pageSize = 2,
+    this.pageSize = 16,
     this.page = 1,
     this.title,
     this.ty,

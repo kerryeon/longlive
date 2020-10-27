@@ -49,6 +49,7 @@ class PostInfo extends BoardEntity {
       dateCreate: DateTime.parse(map['date_create']),
       dateModify: DateTime.parse(map['date_modify']),
       numLikes: map['likes'],
+      isLiked: map['liked'],
       images: List<String>.from(map['images'].map((e) => e['image']).toList()),
       tags: List<String>.from(map['tags']),
     );
@@ -66,12 +67,17 @@ class PostInfo extends BoardEntity {
 }
 
 class PostQuery extends DBQuery<PostInfo> {
+  int user;
   PostQueryOrder order;
 
-  PostQuery(Habit ty, [this.order]) : super(ty: ty, tags: []);
+  PostQuery(Habit ty, {this.order, int pageSize = 16})
+      : super(ty: ty, tags: [], pageSize: pageSize);
 
   Map<String, String> toJson() {
     final map = super.toJson();
+    if (user != null) {
+      map['user'] = user.toString();
+    }
     if (order != null) {
       map['order'] = order.toJson();
     }

@@ -17,23 +17,39 @@ import 'package:longlive/widgets/post/report.dart';
 ///   - (우측) 신고 버튼, 찜 버튼
 /// - 하단: 작성자의 다른 글 목록
 class PostWidget extends StatefulWidget {
-  final PostInfo info;
+  final List<PostInfo> history;
 
-  const PostWidget(this.info);
+  const PostWidget(this.history);
 
   @override
-  State createState() => _State(info);
+  State createState() => _State(history);
 }
 
 class _State extends State {
-  final PostInfo info;
+  final List<PostInfo> history;
 
   List<PostInfo> relatives = [];
 
-  _State(this.info);
+  _State(this.history);
+
+  PostInfo get info => history.last;
 
   /// 작성자의 다른 글들을 불러옵니다.
-  Future<void> _loadRelatives() async {}
+  Future<void> _loadRelatives() async {
+    final query = PostQuery(
+      null,
+      order: PostQueryOrder.Popular,
+      pageSize: 4,
+    );
+    query.user = info.ownerId;
+
+    // 쿼리 요청
+    final infos = await query.getList(context, 'posts/all');
+
+    // 화면 갱신
+    if (!mounted) return;
+    setState(() => relatives = infos);
+  }
 
   @override
   void initState() {
@@ -98,7 +114,7 @@ class _State extends State {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            PostBoardContentsWidget(relatives),
+            PostBoardContentsWidget(relatives, history),
           ],
         ),
       ),

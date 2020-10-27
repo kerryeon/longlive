@@ -116,7 +116,7 @@ class _State extends BoardState<PostInfo, PostQuery> {
           ],
         ),
         // 게시글 목록
-        PostBoardContentsWidget(infos),
+        PostBoardContentsWidget(infos, []),
       ],
     );
   }
@@ -124,8 +124,9 @@ class _State extends BoardState<PostInfo, PostQuery> {
 
 class PostBoardContentsWidget extends StatelessWidget {
   final List<PostInfo> infos;
+  final List<PostInfo> history;
 
-  const PostBoardContentsWidget(this.infos);
+  const PostBoardContentsWidget(this.infos, this.history);
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +177,7 @@ class PostBoardContentsWidget extends StatelessWidget {
   /// 주어진 게시글을 보여주는 화면으로 이동합니다.
   void _moveToPage(BuildContext context, PostInfo info) async {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (BuildContext context) => PostWidget(info),
+      builder: (BuildContext context) => PostWidget(history + [info]),
     ));
   }
 }

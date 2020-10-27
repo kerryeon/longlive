@@ -19,10 +19,15 @@ class PostSerializer(serializers.ModelSerializer):
 
     images = PostImageSerializer(many=True, read_only=True)
     likes = serializers.IntegerField(source='likes.count', read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.Post
         fields = '__all__'
+
+    def get_liked(self, post):
+        user = self.context['request'].user
+        return bool(user.likes.filter(post=post))
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -59,6 +64,7 @@ class PostFilter(filters.FilterSet):
         fields = {
             'title': ['contains'],
             'ty': ['exact'],
+            'user': ['exact'],
             'date_create': ['gt', 'lt'],
         }
 

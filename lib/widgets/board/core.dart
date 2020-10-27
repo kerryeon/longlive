@@ -61,7 +61,6 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
       }
       query.page += 1;
     }
-    print(refreshPage);
     if (refreshPage == true) {
       _refreshController.resetNoData();
       query.page = 1;
