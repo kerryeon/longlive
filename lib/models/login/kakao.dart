@@ -12,6 +12,9 @@ class KakaoUserLogin extends AbstractUserLogin {
   Future<void> initialize(BuildContext context) async {
     await super.initialize(context);
 
+    // 키해시 로그
+    print('[KeyHash] ${await Kakao.KakaoContext.origin}');
+
     // KakaoTalk Native App Key 등록
     Kakao.KakaoContext.clientId = 'b5a5548ad6ff25d145583cc22d0e9846';
   }
