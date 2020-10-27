@@ -53,7 +53,7 @@ class _State extends BoardState<PostInfo, PostQuery> {
 
   Future<void> reload({
     bool nextPage = false,
-    bool refreshPage = false,
+    bool refreshPage = true,
     String title,
     Habit ty,
     List<String> tags,

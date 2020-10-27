@@ -36,7 +36,7 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
 
   Future<void> reload({
     bool nextPage = false,
-    bool refreshPage = false,
+    bool refreshPage = true,
     String title,
     Habit ty,
     List<String> tags,
@@ -61,6 +61,7 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
       }
       query.page += 1;
     }
+    print(refreshPage);
     if (refreshPage == true) {
       _refreshController.resetNoData();
       query.page = 1;
@@ -135,8 +136,8 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
           enablePullUp: true,
           enablePullDown: true,
           header: WaterDropHeader(),
-          onRefresh: () async => reload(refreshPage: true),
-          onLoading: () async => reload(nextPage: true),
+          onRefresh: () async => reload(),
+          onLoading: () async => reload(refreshPage: false, nextPage: true),
           child: buildBody(context),
         ),
       ),
