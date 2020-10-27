@@ -17,14 +17,6 @@ class LicensesInfo implements UserInfo {
 }
 
 class _BoardWidget extends StatelessWidget {
-  final List<LicenseInfo> infos = [
-    LicenseInfo(
-      name: 'flutter_carousel_slider',
-      url:
-          'https://raw.githubusercontent.com/serenader2014/flutter_carousel_slider/master/LICENSE',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +27,7 @@ class _BoardWidget extends StatelessWidget {
       body: Center(
         child: ListView(
           padding: const EdgeInsets.all(12),
-          children: infos
+          children: LicenseInfo.all
               .map(
                 (i) => Card(
                   color: Colors.lightGreen,
@@ -96,7 +88,9 @@ class _PageWidget extends StatelessWidget {
             alignment: Alignment.topLeft,
             color: Color(0xFFDCEDC8),
             padding: const EdgeInsets.all(18),
-            child: Text(desc),
+            child: SingleChildScrollView(
+              child: Text(desc),
+            ),
           ),
         ),
       ),

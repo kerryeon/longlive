@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from rest_framework import routers
 
 from . import habit
+from . import license
 from . import login
 from . import post
 from . import term
@@ -14,6 +15,7 @@ from . import video
 router = routers.DefaultRouter()
 router.register(r'habits/all', habit.HabitViewSet)
 router.register(r'habits/types', habit.HabitTypeViewSet)
+router.register(r'licenses', license.LicenseViewSet)
 router.register(r'posts/all', post.PostViewSet)
 router.register(r'term', term.TermViewSet)
 router.register(r'user/genders', user.UserGenderTypeViewSet)

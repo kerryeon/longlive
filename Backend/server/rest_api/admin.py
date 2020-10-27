@@ -5,6 +5,7 @@ from . import models
 # Register your models here.
 admin.site.register(models.HabitType)
 admin.site.register(models.Habit)
+admin.site.register(models.License)
 admin.site.register(models.Post)
 admin.site.register(models.PostImage)
 admin.site.register(models.PostLiked)

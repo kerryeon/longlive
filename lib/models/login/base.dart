@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/habit.dart';
+import 'package:longlive/models/license.dart';
 import 'package:longlive/models/net.dart';
 import 'package:longlive/models/term.dart';
 import 'package:longlive/models/user.dart';
@@ -11,9 +12,10 @@ abstract class AbstractUserLogin {
   int get loginType;
 
   Future<void> initialize(BuildContext context) async {
+    await Gender.initialize(context);
     await HabitType.initialize(context);
     await Habit.initialize(context);
-    await Gender.initialize(context);
+    await LicenseInfo.initialize(context);
     await Term.initialize(context);
   }
 
