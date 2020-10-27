@@ -51,7 +51,12 @@ class _State extends BoardState<PostInfo, PostQuery> {
     VoidCallback onCategoryUpdate,
   ) : super(
           url: url,
-          query: PostQuery(_controller.category),
+          query: PostQuery(
+            _controller.category,
+            order: _controller.date
+                ? PostQueryOrder.Popular
+                : PostQueryOrder.Latest,
+          ),
           onCategoryUpdate: onCategoryUpdate,
         );
 

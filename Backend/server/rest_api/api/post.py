@@ -31,16 +31,6 @@ class PostSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return bool(user.likes.filter(post=post))
 
-    def create(self, validated_data):
-        tags = validated_data.pop('tags')
-        images_data = self.context['request'].FILES
-
-        post = models.Post.objects.create(**validated_data)
-        post.tags.set(*tags)
-        for image_data in images_data.getlist('image'):
-            models.PostImage.objects.create(post=post, image=image_data)
-        return post
-
 
 class PostOrderingFilter(filters.OrderingFilter):
     def __init__(self, *args, **kwargs):
@@ -86,12 +76,12 @@ class PostMutSerializer(PostSerializer):
     )
 
     def create(self, validated_data):
-        tags = validated_data.pop('tags')
+        tags = validated_data.pop('tags')[0].split(',')
         images_data = self.context['request'].FILES
 
         post = models.Post.objects.create(**validated_data)
         post.tags.set(*tags)
-        for image_data in images_data.getlist('image'):
+        for image_data in images_data.values():
             models.PostImage.objects.create(post=post, image=image_data)
         return post
 

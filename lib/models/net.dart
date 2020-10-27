@@ -41,7 +41,7 @@ class Net {
     return dio;
   }
 
-  dynamic _request({
+  Future<dynamic> _request({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
@@ -60,20 +60,20 @@ class Net {
 
       // 내부 오류
       if (![200, 201].contains(response.statusCode)) {
-        if (onInternalFailure != null)
+        if (onInternalFailure != null) {
           await onInternalFailure();
-        else
+        } else {
           await showMessageDialog(
             context: context,
             content: NetMessage.internalFailure,
             onConfirm: exitApp,
           );
+        }
         return null;
       }
 
       return jsonDecode(utf8.decode(response.data));
-    } catch (e) {
-      print(e);
+    } catch (_) {
       // 인터넷 연결 실패
       if (onConnectionFailure != null)
         await onConnectionFailure();
@@ -87,7 +87,7 @@ class Net {
     return null;
   }
 
-  dynamic _get({
+  Future<dynamic> _get({
     BuildContext context,
     String url,
     Map<String, String> queries,
@@ -155,15 +155,43 @@ class Net {
     }
   }
 
-  dynamic _post({
+  Future<dynamic> _post({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
+    List<File> files,
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
     return _request(
-      f: (dio, url, {data}) => dio.post(url, data: data),
+      f: (dio, url, {data}) async {
+        // 파일 전송
+        if (files != null) {
+          dio.options.contentType = 'multipart/form-data';
+
+          // 파일 추가
+          final fileList = await Future.wait(
+            files.map((file) {
+              final filename = file.path.split('/').last;
+              return MultipartFile.fromFile(file.path, filename: filename);
+            }),
+          );
+          final formData = fileList.asMap().map((key, value) =>
+              MapEntry('__file_${key.toString()}', value as dynamic));
+
+          // 데이터 추가
+          for (final query in queries.entries) {
+            formData[query.key] = query.value.toString();
+          }
+
+          return dio.post(
+            url,
+            data: FormData.fromMap(formData),
+          );
+        }
+        // 일반 전송
+        return dio.post(url, data: data);
+      },
       context: context,
       url: url,
       queries: queries,
@@ -199,11 +227,13 @@ class Net {
     BuildContext context,
     String url,
     T object,
+    List<File> files,
   }) async {
     return createOneWithQuery(
       context: context,
       url: url,
       queries: object.toJson(),
+      files: files,
     );
   }
 
@@ -211,12 +241,14 @@ class Net {
     BuildContext context,
     String url,
     Map<String, dynamic> queries,
+    List<File> files,
     FallbackFunction onInternalFailure,
   }) async {
     final Map<String, dynamic> data = await _post(
       context: context,
       url: url,
       queries: queries,
+      files: files,
       onConnectionFailure: () async => showMessageDialog(
         context: context,
         content: NetMessage.connectionFailure,
@@ -231,7 +263,7 @@ class Net {
     }
   }
 
-  dynamic _update({
+  Future<dynamic> _update({
     BuildContext context,
     String url,
     Map<String, dynamic> queries,

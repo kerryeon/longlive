@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:longlive/models/base.dart';
@@ -55,18 +57,16 @@ class PostInfo extends BoardEntity {
     );
   }
 
-  Future<bool> create(BuildContext context, List images) async {
-    var result = false;
-
-    final netResult = await Net().createOne(
+  Future<bool> create(BuildContext context, List<File> images) async {
+    final result = await Net().createOne(
       context: context,
       url: 'posts/mut',
       object: this,
+      files: images,
     );
 
-    // 신고 성공
-    if (netResult) {
-      result = true;
+    // 등록 성공
+    if (result) {
       await showMessageDialog(
         context: context,
         content: '등록되었습니다.',
@@ -127,7 +127,7 @@ class PostInfo extends BoardEntity {
       'title': title,
       'desc': desc,
       'ty': ty.id,
-      'tags': tags.toList(),
+      'tags': tags.join(','),
     };
   }
 }
@@ -136,8 +136,11 @@ class PostQuery extends DBQuery<PostInfo> {
   int user;
   PostQueryOrder order;
 
-  PostQuery(Habit ty, {this.order, int pageSize = 16})
-      : super(ty: ty, tags: [], pageSize: pageSize);
+  PostQuery(
+    Habit ty, {
+    this.order = PostQueryOrder.Latest,
+    int pageSize = 16,
+  }) : super(ty: ty, tags: [], pageSize: pageSize);
 
   Map<String, String> toJson() {
     final map = super.toJson();

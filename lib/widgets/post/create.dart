@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/post.dart';
@@ -112,7 +114,10 @@ class _State extends State {
         // 중복 제거
         .toSet();
 
-    final images = [];
+    final images = _imagesController.images
+        .map((e) => e as FileImage)
+        .map((e) => e.file)
+        .toList();
 
     showYesNoDialog(
       context: context,
@@ -126,7 +131,7 @@ class _State extends State {
     String title,
     String desc,
     Set<String> tags,
-    List images,
+    List<File> images,
   ) async {
     final info = PostInfo(
       title: title,

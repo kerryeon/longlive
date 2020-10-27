@@ -17,7 +17,7 @@ class Post(models.Model):
                              related_name='posts')
     ty = models.ForeignKey(Habit, on_delete=models.CASCADE)
 
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     date_create = models.DateTimeField(auto_now_add=True)
     date_modify = models.DateTimeField(auto_now=True)
