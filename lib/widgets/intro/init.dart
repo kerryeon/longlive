@@ -26,10 +26,12 @@ class _State extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 중앙에 배치
-      body: Center(
-        // 로고
-        child: Image.asset('assets/icons/logo.png'),
+      body: Image.asset(
+        'assets/icons/logo.png',
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
       ),
     );
   }

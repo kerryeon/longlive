@@ -22,8 +22,9 @@ class CategoryWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.green,
                   image: DecorationImage(
-                    fit: BoxFit.fill,
                     image: AssetImage('assets/icons/logo.png'),
+                    fit: BoxFit.cover,
+                    alignment: FractionalOffset(0.5, 0.24),
                   ),
                 ),
               ),
