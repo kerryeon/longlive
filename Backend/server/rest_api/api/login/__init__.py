@@ -151,6 +151,9 @@ class RegisterView(generics.CreateAPIView):
         user.backend = settings.AUTHENTICATION_BACKENDS[0]
 
         user = models.User.objects.get(id=user.data['id'])
+        user.habits.add(*serializer.data['user']['habits'])
+        user.save()
+
         session = models.UserSession(
             user=user,
             ty=ty,

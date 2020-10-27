@@ -26,9 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return models.User.objects.create_user(
-            validated_data.pop('age'),
-            validated_data.pop('gender').id,
-            validated_data.pop('term').id,
+            age=validated_data.pop('age'),
+            gender=validated_data.pop('gender').id,
+            term=validated_data.pop('term').id,
         )
 
 
