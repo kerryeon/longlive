@@ -38,11 +38,18 @@ abstract class BoardEntity extends DBTable {
 
 /// 데이터베이스 쿼리를 구성하는 추상 클래스입니다.
 abstract class DBQuery<T extends BoardEntity> {
+  final int pageSize;
+
+  int page;
+  bool hasNextPage = false;
+
   String title;
   Habit ty;
   List<String> tags;
 
   DBQuery({
+    this.pageSize = 2,
+    this.page = 1,
     this.title,
     this.ty,
     this.tags,
@@ -50,6 +57,8 @@ abstract class DBQuery<T extends BoardEntity> {
 
   Map<String, String> toJson() {
     final Map<String, String> map = {};
+    map['page_size'] = pageSize.toString();
+    map['page'] = page.toString();
     if (title != null && title.isNotEmpty) {
       map['title__contains'] = title;
     }
@@ -67,6 +76,11 @@ abstract class DBQuery<T extends BoardEntity> {
     return Net().getList(
       context: context,
       url: url,
+      preprocess: (e) {
+        // 다음 페이지가 있는가?
+        hasNextPage = e['next'] != null;
+        return e['results'];
+      },
       generator: generator,
       queries: toJson(),
     );

@@ -10,6 +10,7 @@ import 'package:longlive/res/net.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 import 'package:path_provider/path_provider.dart';
 
+typedef List<dynamic> PreprocessFunction(dynamic data);
 typedef T GeneratorFunction<T>(Map<String, dynamic> json);
 typedef Future<Response> RequestFunction(Dio dio, String url, {String data});
 typedef Future<void> FallbackFunction();
@@ -106,11 +107,12 @@ class Net {
     BuildContext context,
     String url,
     Map<String, String> queries,
+    PreprocessFunction preprocess,
     GeneratorFunction<T> generator,
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
-    final List<dynamic> data = await _get(
+    var data = await _get(
       context: context,
       url: url,
       queries: queries,
@@ -119,7 +121,9 @@ class Net {
     );
 
     if (data != null) {
-      return data.map((e) => generator(e)).toList();
+      final List<dynamic> dataPreprocessed =
+          preprocess != null ? preprocess(data) : List<dynamic>.from(data);
+      return dataPreprocessed.map((e) => generator(e)).toList();
     } else {
       return null;
     }

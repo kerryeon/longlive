@@ -2,6 +2,7 @@ from django_filters import rest_framework as filters
 from rest_framework import permissions, serializers, viewsets
 
 from .. import models
+from .page import StandardResultsSetPagination
 from .tag import *
 
 
@@ -39,3 +40,4 @@ class VideoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Video.objects.all()
     serializer_class = VideoSerializer
     filterset_class = VideoFilter
+    pagination_class = StandardResultsSetPagination

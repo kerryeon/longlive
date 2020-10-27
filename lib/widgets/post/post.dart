@@ -4,6 +4,7 @@ import 'package:longlive/models/post.dart';
 import 'package:longlive/widgets/image/carousel.dart';
 import 'package:longlive/widgets/post/board.dart';
 import 'package:longlive/widgets/post/like.dart';
+import 'package:longlive/widgets/post/report.dart';
 
 /// ## 게시글 위젯
 /// ### 생김새
@@ -17,19 +18,28 @@ import 'package:longlive/widgets/post/like.dart';
 /// - 하단: 작성자의 다른 글 목록
 class PostWidget extends StatefulWidget {
   final PostInfo info;
-  final List<PostInfo> relatives;
 
-  const PostWidget(this.info, this.relatives);
+  const PostWidget(this.info);
 
   @override
-  State createState() => _State(info, relatives);
+  State createState() => _State(info);
 }
 
 class _State extends State {
   final PostInfo info;
-  final List<PostInfo> relatives;
 
-  _State(this.info, this.relatives);
+  List<PostInfo> relatives = [];
+
+  _State(this.info);
+
+  /// 작성자의 다른 글들을 불러옵니다.
+  Future<void> _loadRelatives() async {}
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRelatives());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,14 +84,7 @@ class _State extends State {
                 // 신고 버튼 / 찜 버튼
                 ButtonBar(
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.report,
-                        color: Colors.red,
-                      ),
-                      tooltip: '신고하기',
-                      onPressed: () {},
-                    ),
+                    ReportButtonWidget(info),
                     LikeButtonWidget(info),
                   ],
                 ),

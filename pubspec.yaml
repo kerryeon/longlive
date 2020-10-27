@@ -40,6 +40,9 @@ dependencies:
   path_provider:
   unicorndial: ^1.1.5
 
+  # Pull to Refresh
+  pull_to_refresh: ^1.6.1
+
   # KakaoTalk
   kakao_flutter_sdk: ^0.5.2
 

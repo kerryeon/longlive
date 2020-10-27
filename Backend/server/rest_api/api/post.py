@@ -4,6 +4,7 @@ from django_filters import rest_framework as filters
 from rest_framework import permissions, serializers, viewsets
 
 from .. import models
+from .page import StandardResultsSetPagination
 from .tag import *
 
 
@@ -68,6 +69,7 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = models.Post.objects.all()
     serializer_class = PostSerializer
     filterset_class = PostFilter
+    pagination_class = StandardResultsSetPagination
 
 
 class UserPostViewSet(viewsets.ReadOnlyModelViewSet):
@@ -75,6 +77,8 @@ class UserPostViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = models.Post.objects.all()
     serializer_class = PostSerializer
+    filterset_class = PostFilter
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -96,6 +100,8 @@ class UserPostLikedViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = models.Post.objects.all()
     serializer_class = PostSerializer
+    filterset_class = PostFilter
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user

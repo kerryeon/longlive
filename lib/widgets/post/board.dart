@@ -52,6 +52,8 @@ class _State extends BoardState<PostInfo, PostQuery> {
         );
 
   Future<void> reload({
+    bool nextPage = false,
+    bool refreshPage = false,
     String title,
     Habit ty,
     List<String> tags,
@@ -65,53 +67,57 @@ class _State extends BoardState<PostInfo, PostQuery> {
       query.order = order;
     }
 
-    return super.reload(title: title, ty: ty, tags: tags);
+    return super.reload(
+      nextPage: nextPage,
+      refreshPage: refreshPage,
+      title: title,
+      ty: ty,
+      tags: tags,
+    );
   }
 
   @override
-  Widget buildBody(BuildContext context) {
-    return Center(
-      child: ListView(
-        children: [
-          Stack(
-            alignment: Alignment.centerLeft,
-            children: [
-              // 날짜
-              Visibility(
-                visible: _controller.date,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 0, 12),
-                  child: Text(
-                    dateFormat,
-                    style: Theme.of(context).textTheme.subtitle1,
+  ScrollView buildBody(BuildContext context) {
+    return ListView(
+      children: [
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            // 날짜
+            Visibility(
+              visible: _controller.date,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 0, 12),
+                child: Text(
+                  dateFormat,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+              ),
+            ),
+            // 정렬
+            Visibility(
+              visible: _controller.sort,
+              child: ButtonBar(
+                alignment: _controller.date
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.center,
+                children: [
+                  FlatButton(
+                    child: const Text('인기순'),
+                    onPressed: () => reload(order: PostQueryOrder.Popular),
                   ),
-                ),
+                  FlatButton(
+                    child: const Text('최신순'),
+                    onPressed: () => reload(order: PostQueryOrder.Latest),
+                  ),
+                ],
               ),
-              // 정렬
-              Visibility(
-                visible: _controller.sort,
-                child: ButtonBar(
-                  alignment: _controller.date
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.center,
-                  children: [
-                    FlatButton(
-                      child: const Text('인기순'),
-                      onPressed: () => reload(order: PostQueryOrder.Popular),
-                    ),
-                    FlatButton(
-                      child: const Text('최신순'),
-                      onPressed: () => reload(order: PostQueryOrder.Latest),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // 게시글 목록
-          PostBoardContentsWidget(infos),
-        ],
-      ),
+            ),
+          ],
+        ),
+        // 게시글 목록
+        PostBoardContentsWidget(infos),
+      ],
     );
   }
 }
@@ -169,42 +175,8 @@ class PostBoardContentsWidget extends StatelessWidget {
 
   /// 주어진 게시글을 보여주는 화면으로 이동합니다.
   void _moveToPage(BuildContext context, PostInfo info) async {
-    // 작성자의 다른 글 목록
-    final List<PostInfo> relatives = [
-      PostInfo(
-        title: '안되는 줄 알면서 왜 그랬을까',
-        desc: '^^',
-        ownerId: 124,
-        numLikes: 2931,
-        images: [
-          'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',
-        ],
-        tags: [],
-      ),
-      PostInfo(
-        title: '안되는 줄 알면서 왜 그랬을까',
-        desc: '^^',
-        ownerId: 124,
-        numLikes: 2931,
-        images: [
-          'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',
-        ],
-        tags: [],
-      ),
-      PostInfo(
-        title: '안되는 줄 알면서 왜 그랬을까',
-        desc: '^^',
-        ownerId: 124,
-        numLikes: 2931,
-        images: [
-          'https://i.ytimg.com/vi/lKE0ypSBd2g/sddefault.jpg',
-        ],
-        tags: [],
-      ),
-    ];
-
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (BuildContext context) => PostWidget(info, relatives),
+      builder: (BuildContext context) => PostWidget(info),
     ));
   }
 }

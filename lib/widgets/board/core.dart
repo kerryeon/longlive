@@ -3,6 +3,7 @@ import 'package:hashtagable/hashtagable.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
 import 'package:longlive/widgets/board/menu.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// ## 목록 위젯
 /// ### 생김새
@@ -17,6 +18,10 @@ import 'package:longlive/widgets/board/menu.dart';
 /// - 탭을 눌러 컨텐츠 전환
 abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
     extends State {
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
+
   BoardState({this.url, this.query});
 
   String url;
@@ -30,14 +35,36 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
   bool _isLoading = false;
 
   Future<void> reload({
+    bool nextPage = false,
+    bool refreshPage = false,
     String title,
     Habit ty,
     List<String> tags,
   }) async {
-    if (!mounted || _isLoading) return;
+    if (!mounted) return;
+    if (_isLoading) {
+      if (nextPage) {
+        _refreshController.loadComplete();
+      }
+      if (refreshPage) {
+        _refreshController.refreshCompleted();
+      }
+    }
     _isLoading = true;
 
     // 쿼리 갱신
+    if (nextPage == true) {
+      // 다음 페이지가 없으면, 불러오지 않습니다.
+      if (!query.hasNextPage) {
+        _refreshController.loadNoData();
+        return;
+      }
+      query.page += 1;
+    }
+    if (refreshPage == true) {
+      _refreshController.resetNoData();
+      query.page = 1;
+    }
     if (title != null) {
       query.title = title;
     }
@@ -55,7 +82,23 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
     // 화면 갱신
     if (!mounted) return;
     _isLoading = false;
-    setState(() => this.infos = infos);
+    setState(() {
+      if (nextPage) {
+        // 다음 페이지의 내용은 이전 페이지들의 내용의 뒤에 붙입니다.
+        this.infos += infos;
+      } else {
+        // 새로운 페이지의 내용은 이전 페이지들의 내용에 덮어씌웁니다.
+        this.infos = infos;
+      }
+    });
+
+    // 컨트롤러 갱신
+    if (nextPage) {
+      _refreshController.loadComplete();
+    }
+    if (refreshPage) {
+      _refreshController.refreshCompleted();
+    }
   }
 
   @override
@@ -86,11 +129,21 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
         onTap: (ty) => reload(title: '', tags: [], ty: ty),
       ),
       // 중앙에 배치
-      body: buildBody(context),
+      body: Center(
+        child: SmartRefresher(
+          controller: _refreshController,
+          enablePullUp: true,
+          enablePullDown: true,
+          header: WaterDropHeader(),
+          onRefresh: () async => reload(refreshPage: true),
+          onLoading: () async => reload(nextPage: true),
+          child: buildBody(context),
+        ),
+      ),
     );
   }
 
-  Widget buildBody(BuildContext context);
+  ScrollView buildBody(BuildContext context);
 
   /// 주제어 및 태그를 검색합니다.
   Future<void> _search() async {
