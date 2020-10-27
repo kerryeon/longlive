@@ -120,7 +120,6 @@ class LogoutView(views.APIView):
 class UserRegisterSerializer(serializers.Serializer):
     user = UserSerializer()
     session = LoginSessionSerializer()
-    habits = serializers.ListField(child=serializers.IntegerField())
 
 
 class RegisterView(generics.CreateAPIView):
@@ -158,14 +157,6 @@ class RegisterView(generics.CreateAPIView):
             remote_id=remote_id,
         )
         session.save()
-
-        for habit in serializer.data['habits']:
-            try:
-                habit = models.Habit.objects.get(id=habit)
-                user_habit = models.UserHabit(user=user, ty=habit)
-                user_habit.save()
-            except models.Habit.DoesNotExist:
-                pass
 
         login(self.request, user)
 

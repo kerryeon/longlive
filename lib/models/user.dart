@@ -87,16 +87,12 @@ class User extends DBTable {
   }
 
   Future<bool> register(BuildContext context) async {
-    final user = toJson();
-    final habits = user.remove('habits');
-
     return Net().createOneWithQuery(
       context: context,
       url: 'user/session/register',
       queries: {
         'session': await UserLogin().toJson(context),
-        'user': user,
-        'habits': habits,
+        'user': toJson(),
       },
     );
   }

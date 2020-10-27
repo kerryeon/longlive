@@ -37,7 +37,7 @@ class Net {
     dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
     dio.options.headers[HttpHeaders.acceptCharsetHeader] = 'utf-8';
     dio.options.responseType = ResponseType.bytes;
-    dio.options.validateStatus = (status) => status < 500;
+    dio.options.validateStatus = (status) => status < 600;
     return dio;
   }
 
@@ -61,6 +61,7 @@ class Net {
       // 내부 오류
       if (![200, 201].contains(response.statusCode)) {
         if (onInternalFailure != null) {
+          print('[NET] Internal Error: ${utf8.decode(response.data)}');
           await onInternalFailure();
         } else {
           await showMessageDialog(
@@ -73,7 +74,8 @@ class Net {
       }
 
       return jsonDecode(utf8.decode(response.data));
-    } catch (_) {
+    } catch (e) {
+      print('[NET] Internal Error: $e');
       // 인터넷 연결 실패
       if (onConnectionFailure != null)
         await onConnectionFailure();
