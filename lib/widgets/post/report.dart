@@ -65,6 +65,7 @@ class _State extends State {
         child: FormTextWidget(
           controller: _descController,
           focusNode: _descFocus,
+          autofocus: true,
           keyboardType: TextInputType.multiline,
           labelText: '사유',
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class FormTextWidget extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
+  final bool autofocus;
 
   final TextInputType keyboardType;
 
@@ -11,6 +12,7 @@ class FormTextWidget extends StatelessWidget {
   const FormTextWidget({
     this.controller,
     this.focusNode,
+    this.autofocus = false,
     this.keyboardType,
     this.labelText,
   });
@@ -22,6 +24,7 @@ class FormTextWidget extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         focusNode: focusNode,
+        autofocus: autofocus,
         keyboardType: keyboardType,
         maxLines: keyboardType == TextInputType.multiline ? null : 1,
         decoration: decoration(labelText),
