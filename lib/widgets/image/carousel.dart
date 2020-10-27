@@ -159,8 +159,6 @@ class _FullScreenWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: PhotoView(
-        minScale: 0.5,
-        maxScale: 2.0,
         imageProvider: image,
       ),
     );
