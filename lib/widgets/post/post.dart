@@ -59,6 +59,7 @@ class _State extends State {
 
   @override
   Widget build(BuildContext context) {
+    final onUpdate = () => setState(() {});
     return Scaffold(
       appBar: AppBar(
         // 게시글 제목
@@ -101,7 +102,7 @@ class _State extends State {
                 ButtonBar(
                   children: [
                     ReportButtonWidget(info),
-                    LikeButtonWidget(info),
+                    LikeButtonWidget(info, onUpdate),
                   ],
                 ),
               ],
@@ -114,7 +115,7 @@ class _State extends State {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
-            PostBoardContentsWidget(relatives, history),
+            PostBoardContentsWidget(relatives, history, onUpdate),
           ],
         ),
       ),

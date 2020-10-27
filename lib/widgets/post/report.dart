@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:longlive/models/post.dart';
 
 class ReportButtonWidget extends StatelessWidget {
-  final PostInfo _info;
+  final PostInfo info;
 
-  const ReportButtonWidget(this._info);
+  const ReportButtonWidget(this.info);
 
   @override
   Widget build(BuildContext context) {

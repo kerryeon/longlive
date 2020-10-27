@@ -48,7 +48,7 @@ class Net {
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
-    final uri = Uri.http(host, '$apiUrl/$url');
+    final uri = Uri.http(host, '$apiUrl/$url/');
 
     try {
       final response = await f(
@@ -71,7 +71,7 @@ class Net {
       }
 
       return jsonDecode(utf8.decode(response.data));
-    } catch (_) {
+    } catch (e) {
       // 인터넷 연결 실패
       if (onConnectionFailure != null)
         await onConnectionFailure();
@@ -92,7 +92,7 @@ class Net {
     FallbackFunction onConnectionFailure,
     FallbackFunction onInternalFailure,
   }) async {
-    final uri = Uri.http(host, '$apiUrl/$url', queries).toString();
+    final uri = Uri.http(host, '$apiUrl/$url/', queries).toString();
     return _request(
       f: (dio, _, {data}) => dio.get(uri),
       context: context,

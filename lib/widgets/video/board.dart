@@ -28,60 +28,62 @@ class _State extends BoardState<VideoInfo, VideoQuery> {
 
   @override
   ScrollView buildBody(BuildContext context) {
-    return GridView.count(
+    return GridView.builder(
       padding: const EdgeInsets.all(16),
-      crossAxisCount: 2,
-      childAspectRatio: 6.8 / 9.0,
-      children: infos
-          .map(
-            (e) => Stack(
-              children: [
-                Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // 썸네일
-                        AspectRatio(
-                          aspectRatio: 17 / 16,
-                          child: Image.network(
-                            e.thumb,
-                            fit: BoxFit.none,
-                            scale: 0.4,
-                          ),
-                        ),
-                        // 제목
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                          child: Text(
-                            e.title,
-                            style: Theme.of(context).textTheme.subtitle2,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 5.9 / 9.0,
+      ),
+      itemCount: infos.length,
+      itemBuilder: (context, index) {
+        final item = infos[index];
+        return Stack(
+          children: [
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // 썸네일
+                    AspectRatio(
+                      aspectRatio: 17 / 16,
+                      child: Image.network(
+                        item.thumb,
+                        fit: BoxFit.none,
+                        scale: 0.4,
+                      ),
                     ),
-                    onTap: () => _moveToPage(e),
-                  ),
-                ),
-                // 광고 태그
-                Visibility(
-                  visible: e.ad,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.star,
-                      color: Colors.orange,
+                    // 제목
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      child: Text(
+                        item.title,
+                        style: Theme.of(context).textTheme.subtitle2,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    tooltip: '광고 영상',
-                    onPressed: null,
-                  ),
+                  ],
                 ),
-              ],
+                onTap: () => _moveToPage(item),
+              ),
             ),
-          )
-          .toList(),
+            // 광고 태그
+            Visibility(
+              visible: item.ad,
+              child: IconButton(
+                icon: Icon(
+                  Icons.star,
+                  color: Colors.orange,
+                ),
+                tooltip: '광고 영상',
+                onPressed: null,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

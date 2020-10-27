@@ -116,7 +116,7 @@ class _State extends BoardState<PostInfo, PostQuery> {
           ],
         ),
         // 게시글 목록
-        PostBoardContentsWidget(infos, []),
+        PostBoardContentsWidget(infos, [], () => setState(() {})),
       ],
     );
   }
@@ -126,51 +126,55 @@ class PostBoardContentsWidget extends StatelessWidget {
   final List<PostInfo> infos;
   final List<PostInfo> history;
 
-  const PostBoardContentsWidget(this.infos, this.history);
+  final VoidCallback onUpdate;
+
+  const PostBoardContentsWidget(this.infos, this.history, this.onUpdate);
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
+    return GridView.builder(
       shrinkWrap: true,
       primary: false,
       padding: const EdgeInsets.all(16),
-      crossAxisCount: 2,
-      childAspectRatio: 5.9 / 9.0,
-      children: infos
-          .map(
-            (e) => InkWell(
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // 썸네일
-                    AspectRatio(
-                      aspectRatio: 17 / 16,
-                      child: Image.network(
-                        e.thumb,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    // 제목
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                      child: Text(
-                        e.title,
-                        style: Theme.of(context).textTheme.subtitle2,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    // 찜 버튼
-                    LikeButtonWidget(e),
-                  ],
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 5.9 / 9.0,
+      ),
+      itemCount: infos.length,
+      itemBuilder: (context, index) {
+        final item = infos[index];
+        return InkWell(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // 썸네일
+                AspectRatio(
+                  aspectRatio: 17 / 16,
+                  child: Image.network(
+                    item.thumb,
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-              onTap: () => _moveToPage(context, e),
+                // 제목
+                Container(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                  child: Text(
+                    item.title,
+                    style: Theme.of(context).textTheme.subtitle2,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                // 찜 버튼
+                LikeButtonWidget(item, onUpdate),
+              ],
             ),
-          )
-          .toList(),
+          ),
+          onTap: () => _moveToPage(context, item),
+        );
+      },
     );
   }
 

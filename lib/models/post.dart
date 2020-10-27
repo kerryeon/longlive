@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:longlive/models/base.dart';
 import 'package:longlive/models/habit.dart';
+import 'package:longlive/models/net.dart';
 
 class PostInfo extends BoardEntity {
   final String desc;
@@ -10,11 +12,10 @@ class PostInfo extends BoardEntity {
   final DateTime dateCreate;
   final DateTime dateModify;
 
-  final int numLikes;
-  final List<String> images;
-
-  // 찜 상태
+  int numLikes;
   bool isLiked;
+
+  final List<String> images;
 
   PostInfo({
     int id,
@@ -26,8 +27,8 @@ class PostInfo extends BoardEntity {
     this.dateCreate,
     this.dateModify,
     this.numLikes,
-    this.images,
     this.isLiked = false,
+    this.images,
   }) : super(id, title, ty, tags);
 
   String get thumb => images.isNotEmpty
@@ -37,6 +38,20 @@ class PostInfo extends BoardEntity {
 
   String get numLikesFormat {
     return NumberFormat('#,###').format(numLikes);
+  }
+
+  Future<void> toggleLike(BuildContext context) async {
+    isLiked = !isLiked;
+    numLikes += isLiked ? 1 : -1;
+
+    return Net().createOneWithQuery(
+      context: context,
+      url: 'user/posts/liked/mut',
+      queries: {
+        'post': id,
+        'enabled': isLiked,
+      },
+    );
   }
 
   static PostInfo fromJson(Map<String, dynamic> map) {

@@ -1,9 +1,11 @@
 from django.db.models import Count
 
 from django_filters import rest_framework as filters
-from rest_framework import permissions, serializers, viewsets
+from rest_framework import mixins, permissions, serializers, status, viewsets
+from rest_framework.response import Response
 
 from .. import models
+from .csrf import CsrfExemptSessionAuthentication
 from .page import StandardResultsSetPagination
 from .tag import *
 
@@ -96,9 +98,11 @@ class PostLikedSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
+    enabled = serializers.BooleanField(required=False)
+
     class Meta:
         model = models.PostLiked
-        fields = ('user', 'post')
+        fields = ('user', 'post', 'enabled')
 
 
 class UserPostLikedViewSet(viewsets.ReadOnlyModelViewSet):
@@ -114,8 +118,9 @@ class UserPostLikedViewSet(viewsets.ReadOnlyModelViewSet):
         return models.Post.objects.filter(likes__user=user)
 
 
-class UserPostLikedMutViewSet(viewsets.ModelViewSet):
+class UserPostLikedMutViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
     permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
 
     queryset = models.PostLiked.objects.all()
     serializer_class = PostLikedSerializer
@@ -123,3 +128,27 @@ class UserPostLikedMutViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return models.PostLiked.objects.filter(user=user)
+
+    def create(self, request, *args, **kwargs):
+        if 'enabled' in request.data.keys():
+            if request.data['enabled'] == True:
+                del request.data['enabled']
+                try:
+                    return super().create(request, *args, **kwargs)
+                finally:
+                    return Response({}, status=status.HTTP_201_CREATED)
+            if request.data['enabled'] == False:
+                return self.delete(request, *args, **kwargs)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        if 'post' not in request.data.keys():
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        user = request.user
+        post = request.data['post']
+
+        try:
+            instance = models.PostLiked.objects.get(user=user, post=post)
+            instance.delete()
+        finally:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
