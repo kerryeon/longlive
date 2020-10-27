@@ -24,7 +24,9 @@ class PostBoardWidget extends StatefulWidget {
 
   final String url;
 
-  const PostBoardWidget(this._controller, this.url);
+  final VoidCallback onCategoryUpdate;
+
+  const PostBoardWidget(this._controller, this.url, {this.onCategoryUpdate});
 
   /// 오늘의 년/월 문자열
   String get dateFormat {
@@ -33,7 +35,7 @@ class PostBoardWidget extends StatefulWidget {
   }
 
   @override
-  State createState() => _State(_controller, url, dateFormat);
+  State createState() => _State(_controller, url, dateFormat, onCategoryUpdate);
 }
 
 class _State extends BoardState<PostInfo, PostQuery> {
@@ -46,9 +48,11 @@ class _State extends BoardState<PostInfo, PostQuery> {
     this._controller,
     this.url,
     this.dateFormat,
+    VoidCallback onCategoryUpdate,
   ) : super(
           url: url,
           query: PostQuery(_controller.category),
+          onCategoryUpdate: onCategoryUpdate,
         );
 
   Future<void> reload({
@@ -59,10 +63,10 @@ class _State extends BoardState<PostInfo, PostQuery> {
     List<String> tags,
     PostQueryOrder order,
   }) async {
-    _controller.category = ty;
-    if (_controller.category != null && _controller.category.id == 0)
-      _controller.category = null;
-
+    if (ty != null) {
+      _controller.category = ty;
+      if (_controller.category.id == 0) _controller.category = null;
+    }
     if (order != null) {
       query.order = order;
     }
@@ -74,6 +78,12 @@ class _State extends BoardState<PostInfo, PostQuery> {
       ty: ty,
       tags: tags,
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller._state = this;
   }
 
   @override
@@ -195,9 +205,19 @@ class PostBoardController {
 
   Habit category;
 
+  BoardState<PostInfo, PostQuery> _state;
+
   PostBoardController({
     this.date = false,
     this.sort = true,
     this.category,
   });
+
+  /// 목록을 갱신합니다.
+  Future<void> reload([PostQueryOrder order]) async {
+    if (order != null) {
+      _state.query.order = order;
+    }
+    return _state.reload();
+  }
 }

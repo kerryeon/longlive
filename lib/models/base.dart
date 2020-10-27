@@ -24,7 +24,7 @@ abstract class DBTable {
 abstract class BoardEntity extends DBTable {
   final String title;
   final Habit ty;
-  final List<String> tags;
+  final Set<String> tags;
 
   const BoardEntity(
     int id,

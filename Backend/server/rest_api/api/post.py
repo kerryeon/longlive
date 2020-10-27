@@ -71,13 +71,41 @@ class PostFilter(filters.FilterSet):
         }
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class PostViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     queryset = models.Post.objects.all()
     serializer_class = PostSerializer
     filterset_class = PostFilter
     pagination_class = StandardResultsSetPagination
+
+
+class PostMutSerializer(PostSerializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    def create(self, validated_data):
+        tags = validated_data.pop('tags')
+        images_data = self.context['request'].FILES
+
+        post = models.Post.objects.create(**validated_data)
+        post.tags.set(*tags)
+        for image_data in images_data.getlist('image'):
+            models.PostImage.objects.create(post=post, image=image_data)
+        return post
+
+
+class PostMutViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
+
+    queryset = models.Post.objects.all()
+    serializer_class = PostMutSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Post.objects.filter(user=user)
 
 
 class UserPostViewSet(viewsets.ReadOnlyModelViewSet):

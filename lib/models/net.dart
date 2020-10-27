@@ -73,6 +73,7 @@ class Net {
 
       return jsonDecode(utf8.decode(response.data));
     } catch (e) {
+      print(e);
       // 인터넷 연결 실패
       if (onConnectionFailure != null)
         await onConnectionFailure();

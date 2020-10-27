@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:longlive/models/post.dart';
 import 'package:longlive/models/user.dart';
 import 'package:longlive/widgets/content/base.dart';
 import 'package:longlive/widgets/post/board.dart';
@@ -43,29 +44,37 @@ class _State extends State {
       body: PostBoardWidget(
         _controller,
         'posts/all',
+        onCategoryUpdate: () => setState(() {}),
       ),
       // 등록 버튼
-      floatingActionButton: UnicornDialer(
-        parentButton: Icon(Icons.post_add),
-        childButtons: [
-          UnicornButton(
-            hasLabel: true,
-            labelText: '등록하기',
-            currentButton: FloatingActionButton(
-              child: Icon(Icons.send),
-              onPressed: _moveToCreatePage,
+      floatingActionButton: Visibility(
+        visible: _controller.category != null,
+        child: UnicornDialer(
+          parentButton: Icon(Icons.post_add),
+          childButtons: [
+            UnicornButton(
+              hasLabel: true,
+              labelText: '등록하기',
+              currentButton: FloatingActionButton(
+                child: Icon(Icons.send),
+                onPressed: _moveToCreatePage,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  void _moveToCreatePage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
+  Future<void> _moveToCreatePage() async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute<bool>(
         builder: (BuildContext context) => PostCreateWidget(_controller),
       ),
     );
+
+    if (result == true) {
+      await _controller.reload(PostQueryOrder.Latest);
+    }
   }
 }

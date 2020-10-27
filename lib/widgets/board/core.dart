@@ -22,9 +22,11 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
     initialRefresh: false,
   );
 
-  BoardState({this.url, this.query});
+  final String url;
 
-  String url;
+  final VoidCallback onCategoryUpdate;
+
+  BoardState({this.url, this.query, this.onCategoryUpdate});
 
   List<T> infos = [];
 
@@ -126,7 +128,10 @@ abstract class BoardState<T extends BoardEntity, Q extends DBQuery>
       ),
       // 카테고리 목록
       drawer: CategoryWidget(
-        onTap: (ty) => reload(title: '', tags: [], ty: ty),
+        onTap: (ty) async {
+          if (onCategoryUpdate != null) onCategoryUpdate();
+          return reload(title: '', tags: [], ty: ty);
+        },
       ),
       // 중앙에 배치
       body: Center(

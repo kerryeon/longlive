@@ -22,7 +22,7 @@ class PostInfo extends BoardEntity {
     int id,
     String title,
     Habit ty,
-    List<String> tags,
+    Set<String> tags,
     this.desc,
     this.ownerId,
     this.dateCreate,
@@ -53,6 +53,26 @@ class PostInfo extends BoardEntity {
         'enabled': isLiked,
       },
     );
+  }
+
+  Future<bool> create(BuildContext context, List images) async {
+    var result = false;
+
+    final netResult = await Net().createOne(
+      context: context,
+      url: 'posts/mut',
+      object: this,
+    );
+
+    // 신고 성공
+    if (netResult) {
+      result = true;
+      await showMessageDialog(
+        context: context,
+        content: '등록되었습니다.',
+      );
+    }
+    return result;
   }
 
   Future<bool> report(BuildContext context, String desc) async {
@@ -98,7 +118,7 @@ class PostInfo extends BoardEntity {
       numLikes: map['likes'],
       isLiked: map['liked'],
       images: List<String>.from(map['images'].map((e) => e['image']).toList()),
-      tags: List<String>.from(map['tags']),
+      tags: Set<String>.from(map['tags']),
     );
   }
 
@@ -107,8 +127,7 @@ class PostInfo extends BoardEntity {
       'title': title,
       'desc': desc,
       'ty': ty.id,
-      'tags': tags,
-      'images': images,
+      'tags': tags.toList(),
     };
   }
 }

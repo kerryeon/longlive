@@ -13,7 +13,7 @@ class VideoInfo extends BoardEntity {
     int id,
     String title,
     Habit ty,
-    List<String> tags,
+    Set<String> tags,
     this.desc,
     this.ownerId,
     this.ownerName,
@@ -34,7 +34,7 @@ class VideoInfo extends BoardEntity {
       ty: Habit.all[map['ty']],
       videoId: map['video_id'],
       ad: map['ad'],
-      tags: List<String>.from(map['tags']),
+      tags: Set<String>.from(map['tags']),
     );
   }
 

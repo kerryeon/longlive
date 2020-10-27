@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:longlive/models/post.dart';
 import 'package:longlive/widgets/board/form.dart';
+import 'package:longlive/widgets/dialog/form.dart';
 import 'package:longlive/widgets/dialog/pop.dart';
 import 'package:longlive/widgets/dialog/simple.dart';
 
@@ -82,15 +83,8 @@ class _State extends State {
 
   /// 정말 신고할 것인지, 다시 한번 물어봅니다.
   void onPressed() {
-    final desc = _descController.text.trim();
-    if (desc.isEmpty) {
-      showMessageDialog(
-        context: context,
-        content: '신고 사유를 입력해주세요.',
-        onConfirm: () => _descFocus.requestFocus(),
-      );
-      return;
-    }
+    final desc = tryGetString(context, _descController, _descFocus, '신고 사유');
+    if (desc == null) return;
 
     showYesNoDialog(
       context: context,
