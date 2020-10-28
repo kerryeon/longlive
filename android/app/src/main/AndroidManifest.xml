@@ -43,15 +43,6 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- KakaoTalk -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
-                <data android:host="oauth" android:scheme="kakaob5a5548ad6ff25d145583cc22d0e9846" />
-            </intent-filter>
         </activity>
         <!-- KakaoTalk -->
         <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
