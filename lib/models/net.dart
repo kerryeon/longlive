@@ -16,7 +16,7 @@ typedef Future<Response> RequestFunction(Dio dio, String url, {String data});
 typedef Future<void> FallbackFunction();
 
 class Net {
-  static final String host = '203.255.3.210:40989';
+  static final String host = 'longlive.koreacentral.cloudapp.azure.com:40989';
   static final String apiUrl = '/api/v1';
 
   static final Net _instance = Net._internal();

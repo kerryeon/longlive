@@ -27,8 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '203.255.3.210',
+    'longlive.koreacentral.cloudapp.azure.com',
 ]
-SITE_URL = 'http://203.255.3.210:40989'
 
 
 # Application definition
